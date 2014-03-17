@@ -1,0 +1,5 @@
+#!/bin/bash
+source {{ canvas_scripts_dir }}/envs.sh
+source {{ canvas_scripts_dir }}/custom_envs.sh
+source {{ canvas_scripts_dir }}/php_env.sh
+exec php-fpm -y {{ etc_dir }}/php-fpm/php-fpm_{{ canvas_id }}.conf

@@ -1,0 +1,6 @@
+---
+var_run_dir: /var/run/c4sa
+var_log_dir: /var/log/c4sa
+var_lock_dir: /var/lock/c4sa
+etc_dir: /etc/c4sa
+src_dir: /c4sa/src

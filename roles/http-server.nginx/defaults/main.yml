@@ -1,0 +1,18 @@
+---
+var_run_dir: /var/run/c4sa
+var_log_dir: /var/log/c4sa
+var_lock_dir: /var/lock/c4sa
+etc_dir: /etc/c4sa
+src_dir: /c4sa/src
+
+canvas_id: c4sa_canvas
+
+nginx_user: nginx
+nginx_group: nginx
+
+nginx_vars:
+  http_port: 80
+  https_port: 443
+
+appliance_version: 1.0.0
+local_nginx_resources_dir: /c4sa/http-server.nginx/{{ appliance_version }}

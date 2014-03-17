@@ -1,0 +1,80 @@
+---
+- name: create php-fpm var directories
+  file: path={{ item }}/php-fpm owner=root group=root state=directory
+  with_items:
+    - "{{ var_run_dir }}"
+    - "{{ var_log_dir }}"
+
+- name: create php-fpm canvas var directories
+  file: path={{ item }}/php-fpm/{{ canvas_id }} state=directory
+  with_items:
+    - "{{ var_run_dir }}"
+    - "{{ var_log_dir }}"
+
+- name: create php-fpm etc directory
+  file: path={{ etc_dir }}/php-fpm owner=root group=root state=directory
+
+- name: set pyrus.ini
+  template: src=pyrus.ini.j2 dest={{ phpenv_version_dir }}/etc/conf.d/pyrus.ini
+            mode=644 owner=root group=root
+  notify: restart php-fpm
+
+- name: set php-fpm init script
+  template: src=run_php-fpm.sh.j2
+            dest={{ etc_dir }}/php-fpm/run_php-fpm_{{ canvas_id }}.sh
+            mode=754 owner=root group=root
+  notify: restart php-fpm
+
+- name: set php-fpm conf
+  template: src=run_php-fpm.sh.j2
+            dest={{ etc_dir }}/php-fpm/run_php-fpm_{{ canvas_id }}.sh
+            mode=754 owner=root group=root
+  notify: reload php-fpm
+
+- name: create canvas application scripts directory
+  file: path={{ canvas_scripts_dir }} state=directory
+
+- name: set environment script
+  template: src=app_envs.sh.j2 dest={{ canvas_scripts_dir }}/envs.sh mode=754
+  notify: restart php-fpm
+
+- name: check custom environment template exists
+  local_action: file path={{ local_ansible_resources_dir }}/custom_envs.j2 state=file
+  sudo: no
+  register: custom_env_exists
+  ignore_errors: yes
+
+- name: set custom environment script
+  template: src={{ local_ansible_resources_dir }}/custom_envs.j2
+            dest={{ canvas_scripts_dir }}/custom_envs.sh mode=754
+  when: custom_env_exists|success
+  notify: restart php-fpm
+
+- name: create blank custom environment script
+  copy: dest={{ canvas_scripts_dir }}/custom_envs.sh content="" mode=754
+  when: custom_env_exists|failed
+  notify: restart php-fpm
+
+- name: set environment ini script
+  template: src=interpreter.php/env.ini.j2 dest={{ etc_dir }}/php-fpm/env_{{ canvas_id }}.ini
+            mode=644 owner=root group=root
+  notify: restart php-fpm
+
+- name: check custom environment ini template exists
+  local_action: file path={{ local_ansible_resources_dir }}/server_variables.j2 state=file
+  sudo: no
+  register: custom_env_ini_exists
+  ignore_errors: yes
+
+- name: set custom environment ini script
+  template: src={{ local_ansible_resources_dir }}/server_variables.j2
+            dest={{ etc_dir }}/php-fpm/custom_env_{{ canvas_id }}.ini
+            mode=644 owner=root group=root
+  when: custom_env_ini_exists|success
+  notify: restart php-fpm
+
+- name: create blank custom environment ini script
+  copy: dest={{ etc_dir }}/php-fpm/custom_env_{{ canvas_id }}.ini content=""
+        mode=644 owner=root group=root
+  when: custom_env_ini_exists|failed
+  notify: restart php-fpm

@@ -1,0 +1,39 @@
+---
+- name: install required packages
+  yum: name={{ item }}
+  with_items: 
+    - gcc
+    - gcc-c++
+    - zlib
+    - zlib-devel
+    - byacc
+    - libssh2
+    - libssh2-devel
+    - libtidy
+    - libtidy-devel
+    - rsync
+
+- name: create php src directory
+  file: path={{ php_src_dir }} state=directory
+        owner={{ ansible_ssh_user }} group=root recurse=yes
+
+- name: create php resource directory
+  file: path={{ php_resources_dir }} state=directory owner=root group=root
+
+- name: transfer php resources to the php src directory
+  synchronize: src={{ local_php_resources_dir }}/ dest={{ php_src_dir }}
+               owner=no group=no delete=yes
+
+- name: chown the php src directory to root
+  file: path={{ php_src_dir }} state=directory owner=root recurse=yes
+
+- name: rsync php src directory to the php resource directory
+  command: "rsync -a --delay-updates --out-format='<<CHANGED>>%i %n%L' {{ php_src_dir }}/ {{ php_resources_dir }}"
+  register: rsync_result
+  changed_when: rsync_result.rc == 0 and rsync_result.stdout
+
+- name: create canvas application script directory
+  file: path={{ canvas_scripts_dir }} state=directory
+
+- name: set php_env.sh to the canvas application script directory
+  template: src=php_env.sh.j2 dest={{ canvas_scripts_dir }}/php_env.sh

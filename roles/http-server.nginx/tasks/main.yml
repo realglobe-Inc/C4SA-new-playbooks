@@ -1,0 +1,88 @@
+---
+- name: install required packages
+  yum: name={{ item }}
+  with_items:
+    - openssl
+    - rsync
+
+- name: create nginx src directory
+  file: path={{ nginx_src_dir }} state=directory
+        owner={{ ansible_ssh_user }} group=root recurse=yes
+
+- name: create nginx resource directory
+  file: path={{ nginx_resources_dir }} state=directory owner=root group=root
+
+- name: transfer nginx resources to the nginx src directory
+  synchronize: src={{ local_nginx_resources_dir }}/ dest={{ nginx_src_dir }}
+               owner=no group=no delete=yes
+
+- name: chown the nginx src directory to root
+  file: path={{ nginx_src_dir }} state=directory owner=root recurse=yes
+
+- name: rsync nginx src directory to the nginx resource directory
+  command: "rsync -a --delay-updates --out-format='<<CHANGED>>%i %n%L' {{ nginx_src_dir }}/ {{ nginx_resources_dir }}"
+  register: rsync_result
+  changed_when: rsync_result.rc == 0 and rsync_result.stdout
+
+- name: create nginx group
+  group: name={{ nginx_group }} system=yes
+
+- name: create nginx user
+  user: name={{ nginx_user }} system=yes comment="nginx user"
+        group={{ nginx_group }} home=/var/cache/nginx shell=/sbin/nologin
+
+- name: create nginx var directories
+  file: path={{ item }}/nginx owner={{ nginx_user }} group={{ nginx_group }} state=directory
+  with_items:
+    - "{{ var_run_dir }}"
+    - "{{ var_log_dir }}"
+    - "{{ var_lock_dir }}"
+
+- name: create nginx etc directories
+  file: path={{ etc_dir }}/nginx/{{ item }} owner=root group=root state=directory
+  with_items:
+    - conf.d
+    - ssl_certs
+
+- name: link the nginx log directory to the nginx resources directory
+  file: src={{ var_log_dir }}/nginx dest={{ nginx_resources_dir }}/logs state=link
+
+- name: create self-signed SSL cert
+  command: openssl req -new -nodes -x509 -subj "/C=JP/ST=Tokyo/O=localhost/OU=self-ca/CN=self-ca" -days 3650 -keyout {{ etc_dir }}/nginx/ssl_certs/self_key.pem -out {{ etc_dir }}/nginx/ssl_certs/self_crt.pem -extensions v3_ca creates={{ etc_dir }}/nginx/ssl_certs/self_crt.pem
+
+- name: set nginx.conf
+  template: src=nginx.conf.j2 dest={{ etc_dir }}/nginx/nginx.conf mode=644 owner=root group=root
+  notify: reload nginx
+
+- name: set fastcgi_params
+  copy: src=fastcgi_params dest={{ etc_dir }}/nginx/ mode=644 owner=root group=root
+  notify: reload nginx
+
+- name: create the canvas ssl certs directory
+  file: path={{ etc_dir }}/nginx/ssl_certs/{{ canvas_id }} state=directory owner=root group=root recurse=yes
+  when: ssl_crt is defined or ssl_key is defined
+
+- name: set canvas ssl crt file
+  template: src=crt.pem.j2 dest={{ etc_dir }}/nginx/ssl_certs/{{ canvas_id }}/crt.pem
+            mode=644 owner=root group=root
+  when: ssl_crt is defined
+  notify: reload nginx
+
+- name: set canvas ssl key file
+  template: src=key.pem.j2 dest={{ etc_dir }}/nginx/ssl_certs/{{ canvas_id }}/key.pem
+            mode=644 owner=root group=root
+  when: ssl_key is defined
+  notify: reload nginx
+
+- name: set nginx.ini for supervisor
+  template: src=nginx.ini.j2 dest=/etc/supervisord.d/nginx.ini mode=644 owner=root group=root
+  register: nginx_ini_changed
+
+- name: supervisorctl update
+  command: supervisorctl update
+  register: supervisorctl_updated
+  when: nginx_ini_changed|changed
+
+- name: check nginx is started
+  supervisorctl: name=nginx state=started
+  when: supervisorctl_updated|skipped

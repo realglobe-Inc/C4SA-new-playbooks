@@ -1,0 +1,11 @@
+---
+- name: create db.mysql.shared src directory
+  file: path={{ src_dir }}/db.mysql.shared/ state=directory owner=root group=root
+
+- name: copy MySQL-client rpm
+  copy: src={{ local_mysql_rpm_dir }}/{{ mysql_client_rpm }}
+        dest={{ src_dir }}/db.mysql.shared/
+        owner=root group=root
+
+- name: install MySQL-client rpm
+  yum: name={{ src_dir }}/db.mysql.shared/{{ mysql_client_rpm }}

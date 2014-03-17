@@ -1,0 +1,6 @@
+[program:nginx]
+command={{ nginx_resources_dir }}/nginx/sbin/nginx -c {{ etc_dir }}/nginx/nginx.conf
+numprocs=1
+killasgroup=true
+stdout_logfile={{ var_log_dir }}/nginx/stdout.log
+stderr_logfile={{ var_log_dir }}/nginx/stderr.log

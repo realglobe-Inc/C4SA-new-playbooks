@@ -1,0 +1,6 @@
+# vagrant files
+.vagrant
+vagrant_ansible_inventory_*
+
+# local variables file
+local_vars.yml

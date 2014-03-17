@@ -1,0 +1,3 @@
+---
+nginx_resources_dir: /c4sa/http-server.nginx/{{ appliance_version }}
+nginx_src_dir: "{{ src_dir }}/http-server.nginx/{{ appliance_version }}"

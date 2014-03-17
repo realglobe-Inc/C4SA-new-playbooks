@@ -1,0 +1,5 @@
+server {
+  listen {{ nginx_vars["http_port"] }};
+  server_name {{ nginx_vars["server_name"] }};
+  rewrite ^(.*) https://{{ nginx_vars["server_name"] }}:{{ nginx_vars["server_socket"] }}$1 permanent;
+}

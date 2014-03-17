@@ -1,0 +1,3 @@
+---
+php_resources_dir: /c4sa/interpreter.php/{{ appliance_version }}
+php_src_dir: "{{ src_dir }}/interpreter.php/{{ appliance_version }}"
