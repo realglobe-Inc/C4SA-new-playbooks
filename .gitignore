@@ -1,6 +1,10 @@
 # vagrant files
 .vagrant
+hosts
 vagrant_ansible_inventory_*
 
-# local variables file
+# local vars file
 local_vars.yml
+
+# pyenv version file
+.python-version
