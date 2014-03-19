@@ -6,8 +6,9 @@ var_log_dir: /var/log/c4sa
 var_lock_dir: /var/lock/c4sa
 etc_dir: /etc/c4sa
 src_dir: /c4sa/src
-canvases_dir: /c4sa/canvases
-canvas_scripts_dir: "{{ canvases_dir }}/{{ canvas_id }}/scripts"
+canvases_dir: /canvases
+canvas_id_dir: "{{ canvases_dir }}/{{ canvas_id }}"
+canvas_scripts_dir: "{{ canvas_id_dir }}/scripts"
 
 appliance_version: 1.0.0
 
@@ -15,3 +16,10 @@ php_interpreter_version: 5.4.5
 
 local_php_resources_dir: /c4sa/http-server.nginx/{{ appliance_version }}
 local_ansible_resources_dir: /canvases/ansible_resources
+
+nginx_vars:
+  server_socket: 80
+  server_name: "{{ ansible_eth0.ipv4.address }}"
+  document_root_prefix: "{{ canvas_id_dir }}"
+  server_addr: 127.0.0.1
+  fastcgi_pass: 127.0.0.1:8080

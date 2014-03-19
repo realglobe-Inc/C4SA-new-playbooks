@@ -1,8 +1,4 @@
 #!/bin/sh
-PHPENV_PATH={{ php_resources_dir }}/phpenv
-PHPBUILD_PATH={{ php_resources_dir }}/php-build
-PATH=$PHPENV_PATH/bin:$PHPBUILD_PATH/bin:$PATH:$HOME/bin
 
-export PATH
-eval "$(phpenv init -)"
-phpenv global {{ php_interpreter_version }}
+export PATH={{ canvas_id_dir }}/bin:{{ interpreter_php_lib_dir }}/{{ php_interpreter_version }}/bin:$PATH
+export PHP_INI_SCAN_DIR={{ canvas_id_dir }}/php_ini.d

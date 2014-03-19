@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+source {{ canvas_scripts_dir }}/php_env.sh
+
+HOME={{ interpreter_php_lib_dir }}/{{ php_interpreter_version }} exec {{ php_resources_dir }}/phpenv/versions/{{ php_interpreter_version }}/{{ item.type }}/{{ item.name }} $@

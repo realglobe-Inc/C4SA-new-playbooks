@@ -1,9 +1,9 @@
 ---
-- name: update supervisorctl
-  command: supervisorctl update
-
 - name: restart php-fpm
   supervisorctl: name=php-fpm({{ canvas_id }}) state=restarted
 
 - name: reload php-fpm
-  command: supervisorctl pid "php-fpm({{ canvas_id }})" | xargs kill -s USR2
+  shell: supervisorctl pid "php-fpm({{ canvas_id }})" | xargs kill -s USR2
+
+- name: reload nginx
+  command: "{{ nginx_resources_dir }}/nginx/sbin/nginx -c {{ etc_dir }}/nginx/nginx.conf -s reload"

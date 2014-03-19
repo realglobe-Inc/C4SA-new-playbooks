@@ -1,0 +1,27 @@
+[global]
+pid = {{ var_run_dir }}/php-fpm_{{ canvas_id }}.pid
+daemonize = no
+error_log = {{ var_log_dir }}/php-fpm/error_{{ canvas_id }}.log
+log_level = notice
+
+[php-fpm]
+user = nginx
+group = nginx
+
+listen = {{ var_run_dir }}/php-fpm/php-fpm_{{ canvas_id }}.sock
+
+listen.owner = nginx
+listen.group = nginx
+listen.mode = 600
+
+pm = static
+pm.max_children = 2
+
+catch_workers_output = yes
+
+request_terminate_timeout = 60s
+
+php_admin_flag[log_errors] = on
+
+include={{ etc_dir }}/php-fpm/env_{{ canvas_id }}.ini
+include={{ etc_dir }}/php-fpm/custom_env_{{ canvas_id }}.ini
