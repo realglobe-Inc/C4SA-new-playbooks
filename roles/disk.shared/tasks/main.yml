@@ -1,0 +1,23 @@
+- name: install required packages
+  yum: name={{ item }}
+  with_items:
+    - git
+    - yum
+
+- name: create remote branch mirror dir
+  file: path={{ remote_app_branch_mirror_path }} state=directory
+        owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }}
+
+- name: create remote branch dir
+  file: path={{ remote_app_branch_path }} state=directory
+
+- name: synchronize local branch to remote
+  synchronize: src={{ local_app_branch_path }}/ dest={{ remote_app_branch_mirror_path }}
+               owner=no group=no delete=yes
+
+- name: update remote branch using git
+  git: repo={{ remote_app_branch_mirror_path }} dest={{ remote_app_branch_path }} force=no
+
+- name: chown remote branch dir to nginx user
+  file: path={{ remote_app_branch_path }} state=directory
+        owner={{ nginx_user }} group={{ nginx_group }} recurse=yes
