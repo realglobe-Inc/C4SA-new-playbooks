@@ -58,20 +58,18 @@
   copy: src=fastcgi_params dest={{ etc_dir }}/nginx/ mode=644 owner=root group=root
   notify: reload nginx
 
-- name: create the canvas ssl certs directory
-  file: path={{ etc_dir }}/nginx/ssl_certs/{{ canvas_id }} state=directory owner=root group=root recurse=yes
-  when: ssl_crt is defined or ssl_key is defined
-
-- name: set canvas ssl crt file
-  template: src=crt.pem.j2 dest={{ etc_dir }}/nginx/ssl_certs/{{ canvas_id }}/crt.pem
+- name: set application nginx config file
+  template: src={{ local_ansible_resources_dir }}/templates/nginx_app.conf.j2
+            dest={{ etc_dir }}/nginx/conf.d/nginx_app_{{ canvas_id }}.conf
             mode=644 owner=root group=root
-  when: ssl_crt is defined
   notify: reload nginx
 
-- name: set canvas ssl key file
-  template: src=key.pem.j2 dest={{ etc_dir }}/nginx/ssl_certs/{{ canvas_id }}/key.pem
-            mode=644 owner=root group=root
-  when: ssl_key is defined
+- include: ssl.yml
+  when: ssl_crt is defined and ssl_key is defined
+
+- name: unset nginx config for https redirection
+  file: path={{ etc_dir }}/nginx/conf.d/nginx_app_{{ canvas_id }}_redirect.conf state=absent
+  when: ssl_crt is not defined or ssl_key is not defined
   notify: reload nginx
 
 - name: set nginx.ini for supervisor

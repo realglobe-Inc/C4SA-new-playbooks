@@ -15,6 +15,7 @@ appliance_version: 1.0.0
 php_interpreter_version: 5.4.5
 interpreter_php_appliance_id: php
 interpreter_php_lib_dir: "{{ canvas_id_dir }}/{{ interpreter_php_appliance_id }}/lib"
+php_ini_scan_dir: "{{ canvas_id_dir }}/php.d"
 
 local_php_resources_dir: /c4sa/http-server.nginx/{{ appliance_version }}
 local_ansible_resources_dir: /canvases/ansible_resources

@@ -40,6 +40,7 @@
 
 - name: create interpreter.php lib directory
   file: path={{ interpreter_php_lib_dir }} state=directory
+        owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }}
 
 - name: rsync the interpreter.php lib directory
   synchronize: src={{ local_interpreter_php_dir }}/lib/
@@ -56,3 +57,6 @@
     - { type: "bin", name: "php-config" }
     - { type: "sbin", name: "php-fpm" }
     - { type: "bin", name: "phpize" }
+
+- name: create pyrus binary wrappers
+  template: src=pyrus_wrapper.j2 dest={{ canvas_id_dir }}/bin/pyrus mode=755

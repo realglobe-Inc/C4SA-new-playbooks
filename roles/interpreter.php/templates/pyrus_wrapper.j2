@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+source {{ canvas_scripts_dir }}/php_env.sh
+
+HOME={{ interpreter_php_lib_dir }}/{{ php_interpreter_version }} exec {{ php_resources_dir }}/phpenv/versions/{{ php_interpreter_version }}/bin/php -dphar.readonly=0 {{ php_resources_dir }}/phpenv/versions/{{ php_interpreter_version }}/bin/pyrus.phar $@

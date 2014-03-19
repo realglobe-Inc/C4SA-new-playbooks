@@ -1,0 +1,20 @@
+---
+- name: create the canvas ssl certs directory
+  file: path={{ etc_dir }}/nginx/ssl_certs/{{ canvas_id }} state=directory owner=root group=root recurse=yes
+
+- name: set canvas ssl crt file
+  template: src=crt.pem.j2 dest={{ etc_dir }}/nginx/ssl_certs/{{ canvas_id }}/crt.pem
+            mode=644 owner=root group=root
+  notify: reload nginx
+
+- name: set canvas ssl key file
+  template: src=key.pem.j2 dest={{ etc_dir }}/nginx/ssl_certs/{{ canvas_id }}/key.pem
+            mode=644 owner=root group=root
+  notify: reload nginx
+
+- name: set nginx config for https redirection
+  template: src=redirect_to_https_nginx_conf.j2
+            dest={{ etc_dir }}/nginx/conf.d/nginx_app_{{ canvas_id }}_redirect.conf
+            mode=644 owner=root group=root
+  when: ssl_crt is defined and ssl_key is defined
+  notify: reload nginx

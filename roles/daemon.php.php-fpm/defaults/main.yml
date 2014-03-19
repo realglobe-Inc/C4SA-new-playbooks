@@ -19,10 +19,3 @@ local_ansible_resources_dir: /canvases/ansible_resources
 
 nginx_user: nginx
 nginx_group: nginx
-
-nginx_vars:
-  server_socket: 80
-  server_name: "{{ ansible_eth0.ipv4.address }}"
-  document_root_prefix: "{{ canvas_id_dir }}"
-  server_addr: "{{ ansible_eth0.ipv4.address }}"
-  fastcgi_pass: "unix:{{ var_run_dir }}/php-fpm/php-fpm_{{ canvas_id }}.sock"

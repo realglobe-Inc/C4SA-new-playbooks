@@ -5,8 +5,8 @@ error_log = {{ var_log_dir }}/php-fpm/error_{{ canvas_id }}.log
 log_level = notice
 
 [php-fpm]
-user = {{ nginx_user }}
-group = {{ nginx_group }}
+user = {{ app_user }}
+group = {{ app_group }}
 
 listen = {{ var_run_dir }}/php-fpm/php-fpm_{{ canvas_id }}.sock
 

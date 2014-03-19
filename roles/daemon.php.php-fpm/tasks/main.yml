@@ -14,18 +14,23 @@
 - name: create php-fpm etc directory
   file: path={{ etc_dir }}/php-fpm owner=root group=root state=directory
 
-- name: create canvas php_ini directory
-  file: path={{ canvas_id_dir }}/php_ini.d state=directory
+- name: create canvas php_ini_scan_dir
+  file: path={{ php_ini_scan_dir }} state=directory
 
 - name: set pyrus.ini
   copy: src={{ local_interpreter_php_dir }}/conf.d/pyrus.ini
-        dest={{ canvas_id_dir }}/php_ini.d/pyrus.ini
+        dest={{ php_ini_scan_dir }}/pyrus.ini
   notify: restart php-fpm
 
 - name: set php-fpm init script
   template: src=run_php-fpm.sh.j2
             dest={{ etc_dir }}/php-fpm/run_php-fpm_{{ canvas_id }}.sh
             mode=754 owner=root group=root
+  notify: restart php-fpm
+
+- name: set php interpreter version file
+  copy: dest={{ php_ini_scan_dir }}/.php_version
+        content={{ php_interpreter_version }}
   notify: restart php-fpm
 
 - name: set php-fpm conf
@@ -81,24 +86,6 @@
         mode=644 owner=root group=root
   when: custom_env_ini_exists|failed
   notify: restart php-fpm
-
-- name: set application nginx config file
-  template: src={{ local_ansible_resources_dir }}/templates/nginx_app.conf.j2
-            dest={{ etc_dir }}/nginx/conf.d/nginx_app_{{ canvas_id }}.conf
-            mode=644 owner=root group=root
-  notify: reload nginx
-
-- name: set nginx config for https redirection
-  template: src=redirect_to_https_nginx_conf.j2
-            dest={{ etc_dir }}/nginx/conf.d/nginx_app_{{ canvas_id }}_redirect.conf
-            mode=644 owner=root group=root
-  when: ssl_crt is defined and ssl_key is defined
-  notify: reload nginx
-
-- name: unset nginx config for https redirection
-  file: path={{ etc_dir }}/nginx/conf.d/nginx_app_{{ canvas_id }}_redirect.conf state=absent
-  when: ssl_crt is not defined or ssl_key is not defined
-  notify: reload nginx
 
 - name: set php-fpm.ini for supervisor
   template: src=php-fpm.ini.j2 dest=/etc/supervisord.d/php-fpm_{{ canvas_id }}.ini

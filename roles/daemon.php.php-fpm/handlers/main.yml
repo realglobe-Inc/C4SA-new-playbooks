@@ -4,6 +4,3 @@
 
 - name: reload php-fpm
   shell: supervisorctl pid "php-fpm({{ canvas_id }})" | xargs kill -s USR2
-
-- name: reload nginx
-  command: "{{ nginx_resources_dir }}/nginx/sbin/nginx -c {{ etc_dir }}/nginx/nginx.conf -s reload"

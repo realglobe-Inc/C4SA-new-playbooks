@@ -1,7 +1,3 @@
 ---
-php_resources_dir: /c4sa/interpreter.php/{{ appliance_version }}
-
-php_ini_scan_dir: "{{ canvas_id_dir }}/php.d"
-
 app_user: "{{ ansible_ssh_user if ansible_ssh_user != 'root' else nginx_user }}"
 app_group: "{{ ansible_ssh_user if ansible_ssh_user != 'root' else nginx_group }}"
