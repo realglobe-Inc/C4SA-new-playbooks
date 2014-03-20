@@ -1,4 +1,21 @@
 ---
+- hosts: all
+  tasks:
+    - name: group hosts by distribution
+      group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
+    - name: group hosts by machine architecture
+      group_by: key="{{ ansible_machine }}"
+
+- hosts: all:!RedHat-6*:!CentOS-6*
+  tasks:
+    - name: fail when distribution not match
+      fail: msg="this playbook is only compatible with RHEL6, CentOS6 distributions"
+
+- hosts: all:!x86_64
+  tasks:
+    - name: fail when architecture not match
+      fail: msg="this playbook is only compatible with x86_64 architecture"
+
 - hosts: app
   sudo: yes
   roles:

@@ -1,0 +1,59 @@
+---
+- name: create db.mysql.shared src directory
+  file: path={{ mysql_src_dir }} state=directory owner=root group=root
+
+- name: copy MySQL rpms
+  copy: src={{ local_mysql_rpm_dir }}/{{ item }}
+        dest={{ mysql_src_dir }} owner=root group=root
+  with_items:
+    - "{{ mysql_rpm_string % 'shared-compat' }}"
+    - "{{ mysql_rpm_string % 'server' }}"
+    - "{{ mysql_rpm_string % 'devel' }}"
+    - "{{ mysql_rpm_string % 'shared' }}"
+    - "{{ mysql_rpm_string % 'client' }}"
+
+- name: install MySQL rpms
+  yum: name={{ item }}
+  with_items:
+    - MySQL-python
+    - "{{ mysql_src_dir }}/{{ mysql_rpm_string % 'shared-compat' }}"
+    - "{{ mysql_src_dir }}/{{ mysql_rpm_string % 'server' }}"
+    - "{{ mysql_src_dir }}/{{ mysql_rpm_string % 'devel' }}"
+    - "{{ mysql_src_dir }}/{{ mysql_rpm_string % 'shared' }}"
+    - "{{ mysql_src_dir }}/{{ mysql_rpm_string % 'client' }}"
+
+- name: set my.cnf file
+  template: src=my.cnf.j2 dest=/etc/ mode=0644 owner=root group=root
+  notify: restart mysql
+
+- name: start mysql server
+  service: name=mysql state=started enabled=yes
+
+- name: update mysql root password for all root accounts
+  mysql_user: name=root host={{ item }} password={{ mysql_vars.root_password }}
+  with_items:
+   - "{{ ansible_hostname }}"
+   - 127.0.0.1
+   - ::1
+   - localhost
+  when: ansible_hostname != 'localhost'
+
+- name: update mysql root password for all root accounts
+  mysql_user: name=root host={{ item }} password={{ mysql_vars.root_password }}
+  with_items:
+   - 127.0.0.1
+   - ::1
+   - localhost
+  when: ansible_hostname == 'localhost'
+
+- name: copy .my.cnf file with root password credentials
+  template: src=.my.cnf.j2 dest=~/.my.cnf mode=0600
+
+- name: create database
+  mysql_db: name={{ mysql_vars['database'] }} encoding=utf8
+
+- name: create mysql user
+  mysql_user: name={{ mysql_vars['user'] }} password={{ mysql_vars['password'] }} host={{ item }}
+              priv="{{ mysql_vars['database'] }}.*:ALTER,CREATE,CREATE TEMPORARY TABLES,DELETE,DROP,EXECUTE,INDEX,INSERT,LOCK TABLES,SELECT,UPDATE"
+              state=present
+  with_items: groups['app']

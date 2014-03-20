@@ -1,0 +1,20 @@
+---
+src_dir: /c4sa/src
+mysql_src_dir: "{{ src_dir }}/db.mysql.shared"
+
+canvas_id: c4sa_canvas
+
+mysql_rpm_version: 5.5.23-1
+mysql_rpm_string: MySQL-%s-{{ mysql_rpm_version }}.el6.x86_64.rpm
+
+mysql_dir: /var/lib/mysql
+mysql_socket: "{{ mysql_dir }}/mysql.sock"
+mysql_pid_file: "{{ mysql_dir }}/mysql.pid"
+
+local_mysql_rpm_dir: /c4sa/db.mysql.shared/1.0.0/
+
+mysql_vars:
+  root_password: rootpassword
+  database: "{{ canvas_id }}"
+  user: "{{ canvas_id }}"
+  password: password
