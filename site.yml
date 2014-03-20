@@ -4,3 +4,8 @@
   roles:
     - role: daemon.php.php-fpm
     - { role: disk.shared, app_type: php }
+
+- hosts: database
+  sudo: yes
+  roles:
+    - role: db.mysql.shared
