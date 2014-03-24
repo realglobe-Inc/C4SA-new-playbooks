@@ -1,0 +1,10 @@
+---
+local_nginx_resources_dir: tmp/nginx
+local_php_resources_dir: tmp/php
+local_mysql_rpm_dir: tmp/mysql
+local_ansible_resources_dir: tmp/ansible_resources
+local_interpreter_php_dir: tmp/interpreter.php
+local_redis_rpm_dir: tmp/redis
+
+canvas_id: canvas_id
+interpreter_php_appliance_id: php
