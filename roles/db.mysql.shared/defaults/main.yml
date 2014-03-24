@@ -4,14 +4,21 @@ mysql_src_dir: "{{ src_dir }}/db.mysql.shared"
 
 canvas_id: c4sa_canvas
 
-mysql_rpm_version: 5.5.23-1
-mysql_rpm_string: MySQL-%s-{{ mysql_rpm_version }}.el6.x86_64.rpm
+mysql_rpm_version: 5.5.18-1
+mysql_rpm_string: MySQL-%s-{{ mysql_rpm_version }}.linux2.6.x86_64.rpm
+mysql_shared_compat_rpm: MySQL-shared-compat-5.5.35-1.linux2.6.x86_64.rpm
 
 mysql_dir: /var/lib/mysql
 mysql_socket: "{{ mysql_dir }}/mysql.sock"
 mysql_pid_file: "{{ mysql_dir }}/mysql.pid"
 
 local_mysql_rpm_dir: /c4sa/db.mysql.shared/1.0.0/
+
+mysql_env_vars:
+  host: C4SA_MYSQL_HOST
+  user: C4SA_MYSQL_USER
+  password: C4SA_MYSQL_PASSWORD
+  database: C4SA_MYSQL_DB
 
 mysql_vars:
   root_password: rootpassword
