@@ -6,5 +6,8 @@ vagrant_ansible_inventory_*
 # local vars file
 local_vars.yml
 
+# site.yml is different depending on the context
+site.yml
+
 # pyenv version file
 .python-version

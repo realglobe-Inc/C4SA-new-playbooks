@@ -15,21 +15,3 @@
   tasks:
     - name: fail when architecture not match
       fail: msg="this playbook is only compatible with x86_64 architecture"
-
-- hosts: app
-  sudo: yes
-  roles:
-    - role: daemon.php.php-fpm
-    - { role: disk.shared, app_type: php }
-  vars_files:
-    - "{{ local_ansible_resources_dir }}/vars/interpreter.php.yml"
-
-- hosts: db
-  sudo: yes
-  roles:
-    - role: db.mysql.shared
-
-- hosts: session
-  sudo: yes
-  roles:
-    - role: kvs.redis.shared

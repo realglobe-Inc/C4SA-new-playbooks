@@ -1,0 +1,5 @@
+---
+- hosts: session
+  sudo: yes
+  roles:
+    - role: kvs.redis.shared
