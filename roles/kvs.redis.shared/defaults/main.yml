@@ -1,0 +1,17 @@
+---
+src_dir: /c4sa/src
+redis_src_dir: "{{ src_dir }}/kvs.redis.shared"
+
+var_run_dir: /var/run/c4sa
+var_log_dir: /var/log/c4sa
+etc_dir: /etc/c4sa
+
+canvas_id: c4sa_canvas
+
+redis_rpm: redis-2.4.10-1.el6.x86_64.rpm
+
+redis_vars:
+  port: 6379
+  password: password
+
+local_redis_rpm_dir: /c4sa/kvs.redis.shared/1.0.0/

@@ -1,0 +1,6 @@
+[program:redis({{ canvas_id }})]
+command=/usr/sbin/redis-server {{ etc_dir }}/redis/redis_{{ canvas_id }}.conf
+numprocs=1
+killasgroup=true
+stdout_logfile={{ var_log_dir }}/redis/stdout.log
+stderr_logfile={{ var_log_dir }}/redis/stderr.log

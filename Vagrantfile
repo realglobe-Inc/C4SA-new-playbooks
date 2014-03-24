@@ -22,7 +22,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "site.yml"
     ansible.verbose = "v"
-    ansible.groups = {"app" => ["centos64_64"], "database" => ["centos64_64"]}
+    ansible.groups = {
+      "app" => ["centos64_64"],
+      "database" => ["centos64_64"],
+      "session" => ["centos64_64"]
+    }
     if File.exist?("local_vars.yml")
       ansible.extra_vars = "local_vars.yml"
     end

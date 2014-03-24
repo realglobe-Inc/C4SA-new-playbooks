@@ -19,3 +19,13 @@ local_ansible_resources_dir: /canvases/ansible_resources
 
 nginx_user: nginx
 nginx_group: nginx
+
+mysql_vars:
+  root_password: rootpassword
+  database: "{{ canvas_id }}"
+  user: "{{ canvas_id }}"
+  password: password
+
+redis_vars:
+  port: 6379
+  password: password

@@ -1,0 +1,37 @@
+---
+- name: create kvs.redis.shared src directory
+  file: path={{ redis_src_dir }} state=directory owner=root group=root
+
+- name: copy redis rpm
+  copy: src={{ local_redis_rpm_dir }}/{{ redis_rpm }} dest={{ redis_src_dir }}
+
+- name: install redis rpm
+  yum: name={{ redis_src_dir }}/{{ redis_rpm }}
+  register: install_redis
+  notify: restart redis
+
+- name: create redis directories
+  file: path={{ item }}/redis state=directory owner=root group=root
+  with_items:
+    - "{{ var_run_dir }}"
+    - "{{ var_log_dir }}"
+    - "{{ etc_dir }}"
+
+- name: set redis.conf
+  template: src=redis.conf.j2 dest={{ etc_dir }}/redis/redis_{{ canvas_id }}.conf
+            mode=644 owner=root group=root
+  notify: restart redis
+
+- name: set ini file for supervisor
+  template: src=redis.ini.j2 dest=/etc/supervisord.d/redis_{{ canvas_id }}.ini
+            mode=644 owner=root group=root
+  register: set_redis_ini
+
+- name: supervisorctl update
+  command: supervisorctl update
+  register: supervisorctl_updated
+  when: set_redis_ini|changed
+
+- name: check redis is started
+  supervisorctl: name="redis({{ canvas_id }})" state=started
+  when: supervisorctl_updated|skipped
