@@ -1,0 +1,2 @@
+---
+dumped_sql_name: "{{ mysql_vars['database'] }}-{{ ansible_date_time['iso8601'] }}"
