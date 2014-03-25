@@ -1,0 +1,60 @@
+---
+- name: install required packages
+  yum: name={{ item }}
+  with_items:
+    - openssl-devel
+    - rsync
+
+- name: create ruby src directory
+  file: path={{ ruby_src_dir }} state=directory
+        owner={{ ansible_ssh_user }} group=root recurse=yes
+
+- name: create ruby resource directory
+  file: path={{ ruby_resources_dir }} state=directory owner=root group=root
+
+- name: transfer ruby resources to the ruby src directory
+  synchronize: src={{ local_ruby_resources_dir }}/ dest={{ ruby_src_dir }}
+               owner=no group=no delete=yes
+  sudo: no
+
+- name: chown the ruby src directory to root
+  file: path={{ ruby_src_dir }} state=directory owner=root recurse=yes
+
+- name: rsync ruby src directory to the ruby resource directory
+  command: "rsync -a --delay-updates --out-format='<<CHANGED>>%i %n%L' {{ ruby_src_dir }}/ {{ ruby_resources_dir }}"
+  register: rsync_result
+  changed_when: rsync_result.rc == 0 and rsync_result.stdout
+
+- name: create canvas application script directory
+  file: path={{ canvas_scripts_dir }} state=directory
+
+- name: create gem directory
+  file: path={{ gem_dir }} state=directory
+        owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }}
+
+- name: rsync the gem directory
+  synchronize: src={{ local_interpreter_ruby_dir }}/gems/
+               dest={{ gem_dir }}
+               owner=no group=no delete=yes
+  sudo: no
+
+- name: set ruby_env.sh to the canvas application script directory
+  template: src=ruby_env.sh.j2 dest={{ canvas_scripts_dir }}/ruby_env.sh
+
+- name: create canvas bin dir
+  file: path={{ canvas_id_dir }}/bin state=directory
+
+- name: create ruby binary wrappers
+  template: src=ruby_bin_wrapper.j2 dest={{ canvas_id_dir }}/bin/{{ item }} mode=755
+  with_items:
+    - "ruby"
+    - "gem"
+    - "rake"
+
+- name: set .gemrc file
+  copy: src=.gemrc dest=~/.gemrc
+  sudo: no
+
+- name: install bundler
+  gem: name=bundler executable={{ canvas_id_dir }}/bin/gem user_install=no state=present
+  sudo: no

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+export GEM_HOME={{ gem_dir }}
+export GEM_PATH=$GEM_HOME
+export RUBYLIB=$GEM_HOME:$RUBYLIB
+export PATH={{ canvas_id_dir }}/bin:{{ gem_dir }}/bin:{{ ruby_resources_dir }}/rbenv/versions/{{ ruby_interpreter_version }}/bin:$PATH
