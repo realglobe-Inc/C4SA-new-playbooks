@@ -14,6 +14,7 @@
 - name: synchronize local branch to remote
   synchronize: src={{ local_app_branch_path }}/ dest={{ remote_app_branch_mirror_path }}
                owner=no group=no delete=yes
+  sudo: no
 
 - name: update remote branch using git
   git: repo={{ remote_app_branch_mirror_path }} dest={{ remote_app_branch_path }} force=no

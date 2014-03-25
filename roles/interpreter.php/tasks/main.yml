@@ -23,6 +23,7 @@
 - name: transfer php resources to the php src directory
   synchronize: src={{ local_php_resources_dir }}/ dest={{ php_src_dir }}
                owner=no group=no delete=yes
+  sudo: no
 
 - name: chown the php src directory to root
   file: path={{ php_src_dir }} state=directory owner=root recurse=yes
@@ -46,6 +47,7 @@
   synchronize: src={{ local_interpreter_php_dir }}/lib/
                dest={{ interpreter_php_lib_dir }}
                owner=no group=no delete=yes
+  sudo: no
 
 - name: create canvas bin dir
   file: path={{ canvas_id_dir }}/bin state=directory
