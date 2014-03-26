@@ -17,7 +17,7 @@ nginx_vars:
   server_name: "{{ ansible_eth0.ipv4.address }}"
   document_root_prefix: "{{ canvas_id_dir }}"
   server_addr: "{{ ansible_eth0.ipv4.address }}"
-  fastcgi_pass: "unix:{{ var_run_dir }}/php-fpm/php-fpm_{{ canvas_id }}.sock"
+  fastcgi_pass: "unix:{{ var_run_dir }}/{{ canvas_id }}/php-fpm/php-fpm.sock"
 
 appliance_version: 1.0.0
 local_nginx_resources_dir: /c4sa/http-server.nginx/{{ appliance_version }}
