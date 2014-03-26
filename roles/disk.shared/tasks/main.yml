@@ -19,6 +19,9 @@
 - name: update remote branch using git
   git: repo={{ remote_app_branch_mirror_path }} dest={{ remote_app_branch_path }} force=no
 
-- name: chown remote branch dir to app user
-  file: path={{ remote_app_branch_path }} state=directory
+- name: chown canvas directories to app user
+  file: path={{ item }} state=directory
         owner={{ app_user }} group={{ app_group }} recurse=yes
+  with_items:
+    - "{{ remote_app_branch_path }}"
+    - "{{ canvas_id_dir }}"
