@@ -1,3 +1,6 @@
 ---
 - name: restart redis
   supervisorctl: name="redis({{ canvas_id }})" state=restarted
+
+- name: start redis
+  supervisorctl: name="redis({{ canvas_id }})" state=started
