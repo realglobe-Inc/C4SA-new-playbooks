@@ -3,5 +3,8 @@ php_resources_dir: /c4sa/interpreter.php/{{ appliance_version }}
 
 php_ini_scan_dir: "{{ canvas_id_dir }}/php.d"
 
-app_user: "{{ ansible_ssh_user if ansible_ssh_user != 'root' else nginx_user }}"
-app_group: "{{ ansible_ssh_user if ansible_ssh_user != 'root' else nginx_group }}"
+app_user: "{{ nginx_user }}"
+app_group: "{{ nginx_group }}"
+
+fpm_var_run_dir: "{{ var_run_dir }}/{{ canvas_id }}/php-fpm"
+fpm_var_log_dir: "{{ var_log_dir }}/{{ canvas_id }}/php-fpm"

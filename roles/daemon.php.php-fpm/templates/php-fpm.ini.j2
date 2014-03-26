@@ -2,5 +2,5 @@
 command={{ etc_dir }}/php-fpm/run_php-fpm_{{ canvas_id }}.sh
 numprocs=1
 killasgroup=true
-stdout_logfile={{ var_log_dir }}/php-fpm/stdout_{{ canvas_id }}.log
-stderr_logfile={{ var_log_dir }}/php-fpm/stderr_{{ canvas_id }}.log
+stdout_logfile={{ fpm_var_log_dir }}/stdout.log
+stderr_logfile={{ fpm_var_log_dir }}/stderr.log

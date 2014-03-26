@@ -2,5 +2,8 @@
 - name: restart php-fpm
   supervisorctl: name=php-fpm({{ canvas_id }}) state=restarted
 
+- name: start php-fpm
+  supervisorctl: name=php-fpm({{ canvas_id }}) state=started
+
 - name: reload php-fpm
   shell: supervisorctl pid "php-fpm({{ canvas_id }})" | xargs kill -s USR2
