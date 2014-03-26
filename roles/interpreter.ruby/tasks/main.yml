@@ -30,13 +30,11 @@
 
 - name: create gem directory
   file: path={{ gem_dir }} state=directory
-        owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }}
 
 - name: rsync the gem directory
   synchronize: src={{ local_interpreter_ruby_dir }}/gems/
                dest={{ gem_dir }}
-               owner=no group=no delete=yes
-  sudo: no
+               owner=no group=no
 
 - name: set ruby_env.sh to the canvas application script directory
   template: src=ruby_env.sh.j2 dest={{ canvas_scripts_dir }}/ruby_env.sh
@@ -52,9 +50,7 @@
     - "rake"
 
 - name: set .gemrc file
-  copy: src=.gemrc dest=~/.gemrc
-  sudo: no
+  copy: src=.gemrc dest=~root/.gemrc
 
 - name: install bundler
   gem: name=bundler executable={{ canvas_id_dir }}/bin/gem user_install=no state=present
-  sudo: no
