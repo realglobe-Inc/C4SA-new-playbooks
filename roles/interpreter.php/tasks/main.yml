@@ -2,15 +2,10 @@
 - name: install required packages
   yum: name={{ item }}
   with_items: 
-    - gcc
-    - gcc-c++
-    - zlib
-    - zlib-devel
-    - byacc
-    - libssh2
-    - libssh2-devel
+    - openssl-devel
+    - libtool
+    - libtool-ltdl
     - libtidy
-    - libtidy-devel
     - rsync
 
 - name: create php src directory
@@ -41,13 +36,11 @@
 
 - name: create interpreter.php lib directory
   file: path={{ interpreter_php_lib_dir }} state=directory
-        owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }}
 
 - name: rsync the interpreter.php lib directory
   synchronize: src={{ local_interpreter_php_dir }}/lib/
                dest={{ interpreter_php_lib_dir }}
-               owner=no group=no delete=yes
-  sudo: no
+               owner=no group=no
 
 - name: create canvas bin dir
   file: path={{ canvas_id_dir }}/bin state=directory
