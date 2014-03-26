@@ -1,0 +1,24 @@
+#!/bin/sh
+{% if mysql_vars is defined and mysql_vars %}
+{% if 'db' in groups and groups['db'] %}
+export C4SA_MYSQL_HOST={{ groups['db'][0] }}
+{% else %}
+export C4SA_MYSQL_HOST=""
+{% endif %}
+export C4SA_MYSQL_USER={{ mysql_vars['user'] }}
+export C4SA_MYSQL_SHARED_USER={{ mysql_vars['user'] }}
+export C4SA_MYSQL_PASSWORD={{ mysql_vars['password'] }}
+export C4SA_MYSQL_SHARED_PASSWORD={{ mysql_vars['password'] }}
+export C4SA_MYSQL_DB={{ mysql_vars['database'] }}
+export C4SA_MYSQL_SHARED_DB={{ mysql_vars['database'] }}
+{% endif %}
+
+{% if redis_vars is defined and redis_vars %}
+{% if 'session' in groups and groups['session'] %}
+export C4SA_REDIS_SHARED_IP={{ groups['session'][0] }}
+{% else %}
+export C4SA_REDIS_SHARED_IP=""
+{% endif %}
+export C4SA_REDIS_SHARED_PORT={{ redis_vars['port'] }}
+export C4SA_REDIS_SHARED_PASSWORD={{ redis_vars['password'] }}
+{% endif %}

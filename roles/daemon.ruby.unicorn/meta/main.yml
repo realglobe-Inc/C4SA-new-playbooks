@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: supervisor.local
+  - role: http-server.nginx
+  - role: interpreter.ruby

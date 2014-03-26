@@ -1,0 +1,5 @@
+{% if ssl_crt is defined and ssl_key is defined %}
+    ssl on;
+    ssl_certificate {{ etc_dir }}/nginx/ssl_certs/{{ canvas_id }}/crt.pem;
+    ssl_certificate_key {{ etc_dir }}/nginx/ssl_certs/{{ canvas_id }}/key.pem;
+{% endif %}

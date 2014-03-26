@@ -1,0 +1,59 @@
+---
+- name: create unicorn directories
+  file: path={{ item }}/unicorn owner={{ app_user }} group={{ app_group }} state=directory
+  with_items:
+    - "{{ unicorn_var_run_dir }}"
+    - "{{ unicorn_var_log_dir }}"
+
+- name: create unicorn etc directory
+  file: path={{ etc_dir }}/unicorn owner=root group=root state=directory
+
+- name: install unicorn
+  gem: name=unicorn executable={{ canvas_id_dir }}/bin/gem user_install=no state=present
+
+- name: set unicorn init script
+  template: src=run_unicorn.sh.j2
+            dest={{ etc_dir }}/unicorn/run_unicorn_{{ canvas_id }}.sh
+            mode=754 owner=root group=root
+  notify: restart unicorn
+
+- name: set unicorn conf
+  template: src=unicorn.conf.j2
+            dest={{ etc_dir }}/unicorn/unicorn_{{ canvas_id }}.conf
+            mode=754 owner=root group=root
+  notify: reload unicorn
+
+- name: set environment script
+  template: src=templates/app_envs.sh.j2 dest={{ canvas_scripts_dir }}/envs.sh mode=754
+  notify: restart unicorn
+
+- name: check custom environment template exists
+  local_action: file path={{ local_ansible_resources_dir }}/custom_envs.j2 state=file
+  sudo: no
+  register: custom_env_exists
+  ignore_errors: yes
+
+- name: set custom environment script
+  template: src={{ local_ansible_resources_dir }}/custom_envs.j2
+            dest={{ canvas_scripts_dir }}/custom_envs.sh mode=754
+  when: custom_env_exists|success
+  notify: restart unicorn
+
+- name: create blank custom environment script
+  copy: dest={{ canvas_scripts_dir }}/custom_envs.sh content="" mode=754
+  when: custom_env_exists|failed
+  notify: restart unicorn
+
+- name: set unicorn.ini for supervisor
+  template: src=unicorn.ini.j2 dest=/etc/supervisord.d/unicorn_{{ canvas_id }}.ini
+            mode=644 owner=root group=root
+
+- name: supervisorctl update
+  command: supervisorctl update
+  register: supervisor_update
+
+- name: notify start unicorn
+  debug: msg="notify start unicorn"
+  changed_when: yes
+  notify: start unicorn
+  when: not supervisor_update|changed
