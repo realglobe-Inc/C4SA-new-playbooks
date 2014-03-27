@@ -11,6 +11,11 @@
 - name: install unicorn
   gem: name=unicorn executable={{ canvas_id_dir }}/bin/gem user_install=no state=present
 
+- name: set ruby version file
+  copy: dest={{ canvas_id_dir }}/.ruby-version
+        content={{ ruby_interpreter_version }}
+  notify: restart unicorn
+
 - name: set unicorn init script
   template: src=run_unicorn.sh.j2
             dest={{ etc_dir }}/unicorn/run_unicorn_{{ canvas_id }}.sh

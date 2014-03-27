@@ -13,6 +13,11 @@
 - name: create php-fpm etc directory
   file: path={{ etc_dir }}/php-fpm owner=root group=root state=directory
 
+- name: set php version file
+  copy: dest={{ canvas_id_dir }}/.php-version
+        content={{ php_interpreter_version }}
+  notify: restart php-fpm
+
 - name: set pyrus.ini
   copy: src={{ local_interpreter_php_dir }}/conf.d/pyrus.ini
         dest={{ php_ini_scan_dir }}/pyrus.ini
