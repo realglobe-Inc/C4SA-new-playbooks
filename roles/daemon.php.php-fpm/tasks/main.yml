@@ -5,15 +5,17 @@
   with_items:
     - "{{ fpm_var_run_dir }}"
     - "{{ fpm_var_log_dir }}"
-    - "{{ php_ini_scan_dir }}"
-    - "{{ canvas_scripts_dir }}"
+
+- name: create php-ini-scan directory
+  file: path={{ php_ini_scan_dir }} state=directory
+        owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }}
 
 - name: create php-fpm etc directory
   file: path={{ etc_dir }}/php-fpm owner=root group=root state=directory
 
 - name: set pyrus.ini
   copy: src={{ local_interpreter_php_dir }}/conf.d/pyrus.ini
-        dest={{ php_ini_scan_dir }}/pyrus.ini owner={{ app_user }} group={{ app_group }}
+        dest={{ php_ini_scan_dir }}/pyrus.ini
   notify: restart php-fpm
 
 - name: set php-fpm init script
@@ -30,7 +32,6 @@
 
 - name: set environment script
   template: src=templates/app_envs.sh.j2 dest={{ canvas_scripts_dir }}/envs.sh mode=754
-            owner={{ app_user }} group={{ app_group }}
   notify: restart php-fpm
 
 - name: check custom environment template exists
@@ -42,14 +43,11 @@
 - name: set custom environment script
   template: src={{ local_ansible_resources_dir }}/custom_envs.j2
             dest={{ canvas_scripts_dir }}/custom_envs.sh mode=754
-            owner={{ app_user }} group={{ app_group }}
   when: custom_env_exists|success
   notify: restart php-fpm
 
 - name: create blank custom environment script
   copy: dest={{ canvas_scripts_dir }}/custom_envs.sh content="" mode=754
-        owner={{ app_user }} group={{ app_group }}
-
   when: custom_env_exists|failed
   notify: restart php-fpm
 

@@ -7,7 +7,7 @@
 
 - name: create nginx src directory
   file: path={{ nginx_src_dir }} state=directory
-        owner={{ ansible_ssh_user }} group=root recurse=yes
+        owner={{ ansible_ssh_user }} recurse=yes
 
 - name: create nginx resource directory
   file: path={{ nginx_resources_dir }} state=directory owner=root group=root
@@ -15,10 +15,6 @@
 - name: transfer nginx resources to the nginx src directory
   synchronize: src={{ local_nginx_resources_dir }}/ dest={{ nginx_src_dir }}
                owner=no group=no delete=yes
-  sudo: no
-
-- name: chown the nginx src directory to root
-  file: path={{ nginx_src_dir }} state=directory owner=root recurse=yes
 
 - name: rsync nginx src directory to the nginx resource directory
   command: "rsync -a --delay-updates --out-format='<<CHANGED>>%i %n%L' {{ nginx_src_dir }}/ {{ nginx_resources_dir }}"

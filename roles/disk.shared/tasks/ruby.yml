@@ -1,0 +1,4 @@
+---
+- name: notify reload unicorn
+  debug: msg="notify reload unicorn"
+  notify: reload unicorn

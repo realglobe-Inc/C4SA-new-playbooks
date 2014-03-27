@@ -18,10 +18,11 @@
 
 - name: update remote branch using git
   git: repo={{ remote_app_branch_mirror_path }} dest={{ remote_app_branch_path }} force=no
+  register: repo_update
 
-- name: chown canvas directories to app user
-  file: path={{ item }} state=directory
+- name: chown remote branch to app user
+  file: path={{ remote_app_branch_path }} state=directory
         owner={{ app_user }} group={{ app_group }} recurse=yes
-  with_items:
-    - "{{ remote_app_branch_path }}"
-    - "{{ canvas_id_dir }}"
+
+- include: ruby.yml
+  when: repo_update|changed and app_type is defined and app_type == 'ruby'
