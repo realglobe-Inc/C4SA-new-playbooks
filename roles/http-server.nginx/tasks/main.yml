@@ -14,7 +14,7 @@
 
 - name: transfer nginx resources to the nginx src directory
   synchronize: src={{ local_nginx_resources_dir }}/ dest={{ nginx_src_dir }}
-               owner=no group=no delete=yes
+               owner=no group=no delete=yes timeout=100
 
 - name: rsync nginx src directory to the nginx resource directory
   command: "rsync -a --delay-updates --out-format='<<CHANGED>>%i %n%L' {{ nginx_src_dir }}/ {{ nginx_resources_dir }}"

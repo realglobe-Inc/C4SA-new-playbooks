@@ -17,7 +17,7 @@
 
 - name: transfer php resources to the php src directory
   synchronize: src={{ local_php_resources_dir }}/ dest={{ php_src_dir }}
-               owner=no group=no delete=yes
+               owner=no group=no delete=yes timeout=100
 
 - name: rsync php src directory to the php resource directory
   command: "rsync -a --delay-updates --out-format='<<CHANGED>>%i %n%L' {{ php_src_dir }}/ {{ php_resources_dir }}"
@@ -32,12 +32,12 @@
 
 - name: create interpreter.php lib directory
   file: path={{ interpreter_php_lib_dir }} state=directory
-        owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }} 
+        owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }}
 
 - name: rsync the interpreter.php lib directory
   synchronize: src={{ local_interpreter_php_dir }}/lib/
                dest={{ interpreter_php_lib_dir }}
-               owner=no group=no
+               owner=no group=no timeout=100
 
 - name: create canvas bin dir
   file: path={{ canvas_id_dir }}/bin state=directory
