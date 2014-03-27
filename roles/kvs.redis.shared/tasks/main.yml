@@ -26,12 +26,4 @@
   template: src=redis.ini.j2 dest=/etc/supervisord.d/redis_{{ canvas_id }}.ini
             mode=644 owner=root group=root
 
-- name: supervisorctl update
-  command: supervisorctl update
-  register: supervisor_update
-
-- name: notify start redis
-  debug: msg="notify start redis"
-  changed_when: yes
-  notify: start redis
-  when: not supervisor_update|changed
+- include: start_supervisor_process.yml process_name=redis({{ canvas_id }})

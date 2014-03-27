@@ -81,12 +81,4 @@
   template: src=php-fpm.ini.j2 dest=/etc/supervisord.d/php-fpm_{{ canvas_id }}.ini
             mode=644 owner=root group=root
 
-- name: supervisorctl update
-  command: supervisorctl update
-  register: supervisor_update
-
-- name: notify start php-fpm
-  debug: msg="notify start php-fpm"
-  changed_when: yes
-  notify: start php-fpm
-  when: not supervisor_update|changed
+- include: start_supervisor_process.yml process_name=php-fpm({{ canvas_id }})

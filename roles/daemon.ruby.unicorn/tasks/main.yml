@@ -48,12 +48,4 @@
   template: src=unicorn.ini.j2 dest=/etc/supervisord.d/unicorn_{{ canvas_id }}.ini
             mode=644 owner=root group=root
 
-- name: supervisorctl update
-  command: supervisorctl update
-  register: supervisor_update
-
-- name: notify start unicorn
-  debug: msg="notify start unicorn"
-  changed_when: yes
-  notify: start unicorn
-  when: not supervisor_update|changed
+- include: start_supervisor_process.yml process_name=unicorn({{ canvas_id }})

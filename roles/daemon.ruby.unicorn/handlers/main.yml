@@ -2,8 +2,5 @@
 - name: restart unicorn
   supervisorctl: name="unicorn({{ canvas_id }})" state=restarted
 
-- name: start unicorn
-  supervisorctl: name="unicorn({{ canvas_id }})" state=started
-
 - name: reload unicorn
   shell: supervisorctl pid "unicorn({{ canvas_id }})" | xargs kill -s HUP
