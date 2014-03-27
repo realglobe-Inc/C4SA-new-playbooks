@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+source {{ canvas_scripts_dir }}/ruby_env.sh
+
+HOME={{ interpreter_ruby_dir }} exec ruby $GEM_HOME/bin/bundle $@

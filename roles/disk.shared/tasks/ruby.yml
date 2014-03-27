@@ -1,4 +1,26 @@
 ---
+- name: check Gemfile exists
+  file: path={{ remote_app_branch_path }}/Gemfile state=file
+  register: gemfile_exists
+  failed_when: gemfile_exists|failed and gemfile_exists.get("state", "") != "absent"
+
+- name: check .bundle/config exists
+  file: path={{ remote_app_branch_path }}/.bundle/config
+  register: bundle_config_exists
+  when: gemfile_exists.get("state", "") != "absent"
+  failed_when: bundle_config_exists|failed and bundle_config_exists.get("state", "") != "absent"
+
+- name: bundle install
+  command: su {{ app_user }} --shell=/bin/bash -c '{{ canvas_id_dir }}/bin/bundle install'
+           chdir={{ remote_app_branch_path }}
+  when: bundle_config_exists|success and bundle_config_exists.get("state", "") != "absent"
+
+- name: bundle install with path
+  command: su {{ app_user }} --shell=/bin/bash -c '{{ canvas_id_dir }}/bin/bundle install --path vendor/bundle'
+           chdir={{ remote_app_branch_path }}
+  when: bundle_config_exists|success and bundle_config_exists.get("state", "") == "absent"
+
 - name: notify reload unicorn
   debug: msg="notify reload unicorn"
   notify: reload unicorn
+  when: repo_update|changed

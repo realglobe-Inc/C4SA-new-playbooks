@@ -28,7 +28,7 @@
   file: path={{ canvas_scripts_dir }} state=directory
 
 - name: set php_env.sh to the canvas application script directory
-  template: src=php_env.sh.j2 dest={{ canvas_scripts_dir }}/php_env.sh
+  template: src=php_env.sh.j2 dest={{ canvas_scripts_dir }}/php_env.sh mode=0644
 
 - name: create interpreter.php lib directory
   file: path={{ interpreter_php_lib_dir }} state=directory

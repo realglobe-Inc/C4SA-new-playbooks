@@ -25,4 +25,4 @@
         owner={{ app_user }} group={{ app_group }} recurse=yes
 
 - include: ruby.yml
-  when: repo_update|changed and app_type is defined and app_type == 'ruby'
+  when: app_type is defined and app_type == 'ruby'

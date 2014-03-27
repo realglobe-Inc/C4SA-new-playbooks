@@ -2,6 +2,7 @@
 - hosts: app
   sudo: yes
   roles:
+    - role: interpreter.ruby
     - { role: disk.shared, app_type: ruby }
     - role: daemon.ruby.unicorn
   vars_files:

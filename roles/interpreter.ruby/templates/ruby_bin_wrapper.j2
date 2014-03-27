@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 source {{ canvas_scripts_dir }}/ruby_env.sh
 
-exec {{ ruby_resources_dir }}/rbenv/versions/{{ ruby_interpreter_version }}/bin/{{ item }} $@
+HOME={{ interpreter_ruby_dir }} exec {{ ruby_resources_dir }}/rbenv/versions/{{ ruby_interpreter_version }}/bin/{{ item }} $@
