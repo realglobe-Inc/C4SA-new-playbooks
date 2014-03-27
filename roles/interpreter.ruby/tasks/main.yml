@@ -14,7 +14,7 @@
 
 - name: transfer ruby resources to the ruby src directory
   synchronize: src={{ local_ruby_resources_dir }}/ dest={{ ruby_src_dir }}
-               owner=no group=no delete=yes timeout=100
+               owner=no group=no delete=yes rsync_timeout=100
 
 - name: rsync ruby src directory to the ruby resource directory
   command: "rsync -a --delay-updates --out-format='<<CHANGED>>%i %n%L' {{ ruby_src_dir }}/ {{ ruby_resources_dir }}"
@@ -29,7 +29,7 @@
 
 - name: rsync the gem directory
   synchronize: src={{ local_interpreter_ruby_dir }}/gems/
-               dest={{ gem_dir }} owner=no group=no timeout=100
+               dest={{ gem_dir }} owner=no group=no rsync_timeout=100
 
 - name: set ruby_env.sh to the canvas application script directory
   template: src=ruby_env.sh.j2 dest={{ canvas_scripts_dir }}/ruby_env.sh
