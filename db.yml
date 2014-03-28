@@ -3,3 +3,13 @@
   sudo: yes
   roles:
     - { role: db.mysql.shared }
+    # When you want to backup sql locally, use this.
+    # - { role: db.mysql.shared, backup: yes }
+    #
+    # If you want to skip default database setting,
+    # - { role: db.mysql.shared, backup_only: yes }
+    #
+    # And put backupped-sql to the s3-like-storage-services (like nifty-cloud-storage)
+    # - { role: db.mysql.shared, backup: yes, s3: yes }
+    # Or
+    # - { role: db.mysql.shared, backup_only: yes, s3: yes }
