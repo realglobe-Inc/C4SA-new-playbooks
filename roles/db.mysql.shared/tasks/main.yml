@@ -7,8 +7,14 @@
         dest={{ src_dir }}/db.mysql.shared/
         owner=root group=root
 
-- name: install MySQL-client rpm
-  yum: name={{ src_dir }}/db.mysql.shared/{{ mysql_rpm_string % 'client' }}
+- name: install MySQL-client and MySQL-python
+  yum: name={{ item }}
+  with_items:
+    - MySQL-python
+    - "{{ src_dir }}/db.mysql.shared/{{ mysql_rpm_string % 'client' }}"
 
 - include: server.yml
-  when: client_only is not defined or not client_only
+  when: "(client_only is not defined or not client_only) and (backup_only is not defined or not backup_only)"
+
+- include: backup.yml
+  when: "(client_only is not defined or not client_only) and ((backup_only is defined and backup_only) or (backup is defined and backup))"

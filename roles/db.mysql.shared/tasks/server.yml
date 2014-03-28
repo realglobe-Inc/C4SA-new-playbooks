@@ -14,7 +14,6 @@
 - name: install MySQL rpms
   yum: name={{ item }}
   with_items:
-    - MySQL-python
     - "{{ mysql_src_dir }}/{{ mysql_shared_compat_rpm }}"
     - "{{ mysql_src_dir }}/{{ mysql_rpm_string % 'server' }}"
     - "{{ mysql_src_dir }}/{{ mysql_rpm_string % 'devel' }}"

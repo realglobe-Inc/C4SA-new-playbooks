@@ -2,4 +2,4 @@
 - hosts: db
   sudo: yes
   roles:
-    - role: db.mysql.shared
+    - { role: db.mysql.shared }
