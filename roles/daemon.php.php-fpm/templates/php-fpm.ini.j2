@@ -1,6 +1,7 @@
 [program:php-fpm({{ canvas_id }})]
 command={{ etc_dir }}/php-fpm/run_php-fpm_{{ canvas_id }}.sh
 numprocs=1
+stopsignal=QUIT
 killasgroup=true
 stdout_logfile={{ fpm_var_log_dir }}/stdout.log
 stderr_logfile={{ fpm_var_log_dir }}/stderr.log

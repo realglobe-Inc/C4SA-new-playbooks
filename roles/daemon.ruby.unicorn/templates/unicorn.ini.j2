@@ -1,6 +1,7 @@
 [program:unicorn({{ canvas_id }})]
 command={{ etc_dir }}/unicorn/run_unicorn_{{ canvas_id }}.sh
 numprocs=1
+stopsignal=QUIT
 killasgroup=true
 stdout_logfile={{ unicorn_var_log_dir }}/stdout.log
 stderr_logfile={{ unicorn_var_log_dir }}/stderr.log
