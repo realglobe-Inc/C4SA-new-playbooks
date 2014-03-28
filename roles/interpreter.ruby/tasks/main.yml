@@ -17,7 +17,7 @@
                owner=no group=no delete=yes rsync_timeout=100
 
 - name: rsync ruby src directory to the ruby resource directory
-  command: "rsync -a --delay-updates --out-format='<<CHANGED>>%i %n%L' {{ ruby_src_dir }}/ {{ ruby_resources_dir }}"
+  command: "rsync -a --delay-updates --no-owner --no-group --out-format='<<CHANGED>>%i %n%L' {{ ruby_src_dir }}/ {{ ruby_resources_dir }}"
   register: rsync_result
   changed_when: rsync_result.rc == 0 and rsync_result.stdout
 

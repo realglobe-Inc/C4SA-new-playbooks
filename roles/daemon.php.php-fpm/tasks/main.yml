@@ -36,7 +36,7 @@
   notify: reload php-fpm
 
 - name: set environment script
-  template: src=templates/app_envs.sh.j2 dest={{ canvas_scripts_dir }}/envs.sh mode=754
+  template: src=common/templates/app_envs.sh.j2 dest={{ canvas_scripts_dir }}/envs.sh mode=754
   notify: restart php-fpm
 
 - name: check custom environment template exists

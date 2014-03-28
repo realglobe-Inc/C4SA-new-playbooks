@@ -29,7 +29,7 @@
   notify: reload unicorn
 
 - name: set environment script
-  template: src=templates/app_envs.sh.j2 dest={{ canvas_scripts_dir }}/envs.sh mode=754
+  template: src=common/templates/app_envs.sh.j2 dest={{ canvas_scripts_dir }}/envs.sh mode=754
   notify: restart unicorn
 
 - name: check custom environment template exists
