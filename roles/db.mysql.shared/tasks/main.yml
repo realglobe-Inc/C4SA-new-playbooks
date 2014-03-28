@@ -1,108 +1,14 @@
 ---
 - name: create db.mysql.shared src directory
-  file: path={{ mysql_src_dir }} state=directory owner=root group=root
+  file: path={{ src_dir }}/db.mysql.shared/ state=directory owner=root group=root
 
-- name: copy MySQL rpms
-  copy: src={{ local_mysql_rpm_dir }}/{{ item }}
-        dest={{ mysql_src_dir }} owner=root group=root
-  with_items:
-    - "{{ mysql_shared_compat_rpm }}"
-    - "{{ mysql_rpm_string % 'server' }}"
-    - "{{ mysql_rpm_string % 'devel' }}"
-    - "{{ mysql_rpm_string % 'shared' }}"
-    - "{{ mysql_rpm_string % 'client' }}"
+- name: copy MySQL-client rpm
+  copy: src={{ local_mysql_rpm_dir }}/{{ mysql_rpm_string % 'client' }}
+        dest={{ src_dir }}/db.mysql.shared/
+        owner=root group=root
 
-- name: install MySQL rpms
-  yum: name={{ item }}
-  with_items:
-    - MySQL-python
-    - "{{ mysql_src_dir }}/{{ mysql_shared_compat_rpm }}"
-    - "{{ mysql_src_dir }}/{{ mysql_rpm_string % 'server' }}"
-    - "{{ mysql_src_dir }}/{{ mysql_rpm_string % 'devel' }}"
-    - "{{ mysql_src_dir }}/{{ mysql_rpm_string % 'shared' }}"
-    - "{{ mysql_src_dir }}/{{ mysql_rpm_string % 'client' }}"
-  notify: restart mysql
+- name: install MySQL-client rpm
+  yum: name={{ src_dir }}/db.mysql.shared/{{ mysql_rpm_string % 'client' }}
 
-- name: set my.cnf replica file
-  template: src=my.cnf.j2 dest=/etc/my.cnf.rep mode=0644 owner=root group=root
-  register: set_my_cnf_rep
-
-- name: stop mysql server
-  service: name=mysql state=stopped enabled=yes
-  when: set_my_cnf_rep|changed
-
-- name: set my.cnf file
-  template: src=my.cnf.j2 dest=/etc/my.cnf mode=0644 owner=root group=root
-
-- name: start mysql server
-  service: name=mysql state=started enabled=yes
-
-- name: update mysql root password for all root accounts
-  mysql_user: name=root host={{ item }} password={{ mysql_vars.root_password }}
-  with_items:
-   - "{{ ansible_hostname }}"
-   - 127.0.0.1
-   - ::1
-   - localhost
-  when: ansible_hostname != 'localhost'
-
-- name: update mysql root password for all root accounts
-  mysql_user: name=root host={{ item }} password={{ mysql_vars.root_password }}
-  with_items:
-   - 127.0.0.1
-   - ::1
-   - localhost
-  when: ansible_hostname == 'localhost'
-
-- name: copy .my.cnf file with root password credentials
-  template: src=.my.cnf.j2 dest=~/.my.cnf mode=0600
-
-- name: create database
-  mysql_db: name={{ mysql_vars['database'] }} encoding=utf8
-  register: create_db_result
-
-## Uncomment this block when importing the local mysql data.
-# - name: dump local mysql data
-#   local_action: mysql_db state=dump target=~/{{ dumped_sql_name }}.sql.gz
-#                 name={{ lookup('env', mysql_env_vars['database']) }}
-#                 login_host={{ lookup('env', mysql_env_vars['host']) }}
-#                 login_user={{ lookup('env', mysql_env_vars['user']) }}
-#                 login_password={{ lookup('env', mysql_env_vars['password']) }}
-#   sudo: no
-#   when: create_db_result|success
-#
-# - name: copy dumped data
-#   copy: src=~/{{ dumped_sql_name }}.sql.gz
-#         dest={{ mysql_src_dir }} owner=root group=root
-#   when: create_db_result|success
-#
-# - name: import dumped data
-#   mysql_db: state=import target={{ mysql_src_dir }}/{{ dumped_sql_name }}.sql.gz
-#             name={{ mysql_vars['database'] }}
-#   when: create_db_result|success
-
-## Uncomment this block when importing the local mysql schema only.
-# - name: dump local mysql schema
-#   local_action: shell mysqldump --quick --no-data --user={{ lookup('env', mysql_env_vars['user']) }}
-#                 --password='{{ lookup('env', mysql_env_vars['password']) }}'
-#                 --host={{ lookup('env', mysql_env_vars['host']) }} --port=3306
-#                 {{ lookup('env', mysql_env_vars['database']) }}
-#                 | gzip > ~/{{ dumped_sql_name }}-schema.sql.gz
-#   sudo: no
-#   when: create_db_result|success
-#
-# - name: copy dumped schema
-#   copy: src=~/{{ dumped_sql_name }}-schema.sql.gz
-#         dest={{ mysql_src_dir }} owner=root group=root
-#   when: create_db_result|success
-#
-# - name: import dumped schema
-#   mysql_db: state=import target={{ mysql_src_dir }}/{{ dumped_sql_name }}-schema.sql.gz
-#             name={{ mysql_vars['database'] }}
-#   when: create_db_result|success
-
-- name: create mysql user
-  mysql_user: name={{ mysql_vars['user'] }} password={{ mysql_vars['password'] }} host={{ item }}
-              priv="{{ mysql_vars['database'] }}.*:ALTER,CREATE,CREATE TEMPORARY TABLES,DELETE,DROP,EXECUTE,INDEX,INSERT,LOCK TABLES,SELECT,UPDATE"
-              state=present
-  with_items: groups['app']
+- include: server.yml
+  when: client_only is not defined or not client_only

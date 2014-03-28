@@ -2,6 +2,7 @@
 - hosts: app
   sudo: yes
   roles:
+    - { role: db.mysql.shared, client_only: yes }
     - { role: disk.shared, app_type: php }
     - role: daemon.php.php-fpm
   vars_files:

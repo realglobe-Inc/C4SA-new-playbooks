@@ -1,9 +1,0 @@
----
-src_dir: /c4sa/src
-
-canvas_id: c4sa_canvas
-
-mysql_rpm_version: 5.5.18-1
-
-mysql_client_rpm: MySQL-client-{{ mysql_rpm_version }}.linux2.6.x86_64.rpm
-local_mysql_rpm_dir: /c4sa/db.mysql.shared/1.0.0/
