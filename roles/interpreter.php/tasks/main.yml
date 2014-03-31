@@ -18,6 +18,7 @@
 - name: transfer php resources to the php src directory
   synchronize: src={{ local_php_resources_dir }}/ dest={{ php_src_dir }}
                owner=no group=no delete=yes rsync_timeout=100
+  sudo: no
 
 - name: rsync php src directory to the php resource directory
   command: "rsync -a --delay-updates --no-owner --no-group --out-format='<<CHANGED>>%i %n%L' {{ php_src_dir }}/ {{ php_resources_dir }}"
@@ -39,6 +40,7 @@
   synchronize: src={{ local_interpreter_php_dir }}/lib/
                dest={{ interpreter_php_lib_dir }}
                owner=no group=no rsync_timeout=100
+  sudo: no
 
 - name: create canvas bin dir
   file: path={{ canvas_id_dir }}/bin state=directory
