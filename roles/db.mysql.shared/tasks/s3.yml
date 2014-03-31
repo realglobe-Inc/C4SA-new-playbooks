@@ -6,4 +6,4 @@
   s3_with_nifty: access_key={{ s3_access_key }} secret_key={{ s3_secret_key }}
                  bucket={{ s3_backet }} s3_url={{ s3_url }} mode=put
                  src=~{{ ansible_ssh_user }}/mysql_backup/{{ mysql_vars['database'] }}-{{ datetime.msg }}.sql.gz
-                 object=c4sa_mysql_backup/{{ mysql_vars['database'] }}-{{ datetime.msg }}.sql.gz
+                 object=c4sa_mysql_backup/{{ ansible_eth0.ipv4.address }}/{{ mysql_vars['database'] }}-{{ datetime.msg }}.sql.gz
