@@ -2,6 +2,7 @@
 - hosts: app
   sudo: yes
   roles:
+    - { role: opt.local }
     - { role: db.mysql.shared, client_only: yes }
     - role: interpreter.ruby
     - { role: disk.shared, app_type: ruby }

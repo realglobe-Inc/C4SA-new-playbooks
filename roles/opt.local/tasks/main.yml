@@ -1,0 +1,30 @@
+---
+- name: get datetime
+  debug: msg={{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}
+  register: datetime
+
+- name: backup the opt directory
+  command: "rsync -a --delay-updates /opt/ /opt.{{ datetime.msg }}"
+
+- name: chown the opt directory to the remote user
+  file: path=/opt state=directory
+        owner={{ ansible_ssh_user }} recurse=yes
+
+- name: sync the opt directory existing only
+  synchronize: src=/opt/ dest=/opt/ owner=no group=no existing_only=yes rsync_timeout=100
+  register: sync_opt_existing
+  changed_when: sync_opt_existing.msg.startswith('<f') or sync_opt_existing.msg.startswith('cL') or '\n<f' in sync_opt_existing.msg or '\ncL' in sync_opt_existing.msg
+  sudo: no
+
+- name: sync the opt directory
+  synchronize: src=/opt/ dest=/opt/ owner=no group=no rsync_timeout=100
+  register: sync_opt
+  sudo: no
+
+- name: chown the opt directory to the remote user
+  file: path=/opt state=directory
+        owner=root group=root recurse=yes
+
+- name: delete the backupped opt directory if not needed
+  file: path=/opt.{{ datetime.msg }} state=absent
+  when: not sync_opt_existing|changed
