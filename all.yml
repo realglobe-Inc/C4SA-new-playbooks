@@ -5,6 +5,12 @@
       group_by: key="{{ ansible_distribution }}-{{ ansible_distribution_version }}"
     - name: group hosts by machine architecture
       group_by: key="{{ ansible_machine }}"
+    - name: fail when multiple hosts given
+      fail: msg="please specify only one {{ item }} host."
+      when: groups.get(item, [])|length > 1
+      with_items:
+        - db
+        - session
 
 - hosts: all:!RedHat-6*:!CentOS-6*
   tasks:
