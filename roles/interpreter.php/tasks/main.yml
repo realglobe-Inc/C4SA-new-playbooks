@@ -29,6 +29,7 @@
 
 - name: set php_env.sh to the canvas application script directory
   template: src=php_env.sh.j2 dest={{ canvas_scripts_dir }}/php_env.sh mode=0644
+            backup=yes
 
 - name: create interpreter.php lib directory
   file: path={{ interpreter_php_lib_dir }} state=directory
@@ -44,6 +45,7 @@
 
 - name: create php binary wrappers
   template: src=php_bin_wrapper.j2 dest={{ canvas_id_dir }}/bin/{{ item.name }} mode=755
+            backup=yes
   with_items:
     - { type: "bin", name: "php" }
     - { type: "bin", name: "php-config" }
@@ -52,3 +54,4 @@
 
 - name: create pyrus binary wrappers
   template: src=pyrus_wrapper.j2 dest={{ canvas_id_dir }}/bin/pyrus mode=755
+            backup=yes

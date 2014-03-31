@@ -5,7 +5,7 @@
 - name: copy MySQL-client rpm
   copy: src={{ local_mysql_rpm_dir }}/{{ mysql_rpm_string % 'client' }}
         dest={{ src_dir }}/db.mysql.shared/
-        owner=root group=root
+        owner=root group=root backup=yes
 
 - name: install MySQL-client and MySQL-python
   yum: name={{ item }}

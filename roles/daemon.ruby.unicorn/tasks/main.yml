@@ -14,22 +14,24 @@
 - name: set ruby version file
   copy: dest={{ canvas_id_dir }}/.ruby-version
         content={{ ruby_interpreter_version }}
+        backup=yes
   notify: restart unicorn
 
 - name: set unicorn init script
   template: src=run_unicorn.sh.j2
             dest={{ etc_dir }}/unicorn/run_unicorn_{{ canvas_id }}.sh
-            mode=754 owner=root group=root
+            mode=754 owner=root group=root backup=yes
   notify: restart unicorn
 
 - name: set unicorn conf
   template: src=unicorn.conf.j2
             dest={{ etc_dir }}/unicorn/unicorn_{{ canvas_id }}.conf
-            mode=754 owner=root group=root
+            mode=754 owner=root group=root backup=yes
   notify: reload unicorn
 
 - name: set environment script
   template: src=common/templates/app_envs.sh.j2 dest={{ canvas_scripts_dir }}/envs.sh mode=754
+            backup=yes
   notify: restart unicorn
 
 - name: check custom environment template exists
@@ -41,16 +43,18 @@
 - name: set custom environment script
   template: src={{ local_ansible_resources_dir }}/custom_envs.j2
             dest={{ canvas_scripts_dir }}/custom_envs.sh mode=754
+            backup=yes
   when: custom_env_exists|success
   notify: restart unicorn
 
 - name: create blank custom environment script
   copy: dest={{ canvas_scripts_dir }}/custom_envs.sh content="" mode=754
+        backup=yes
   when: custom_env_exists|failed
   notify: restart unicorn
 
 - name: set unicorn.ini for supervisor
   template: src=unicorn.ini.j2 dest=/etc/supervisord.d/unicorn_{{ canvas_id }}.ini
-            mode=644 owner=root group=root
+            mode=644 owner=root group=root backup=yes
 
 - include: start_supervisor_process.yml process_name=unicorn({{ canvas_id }})

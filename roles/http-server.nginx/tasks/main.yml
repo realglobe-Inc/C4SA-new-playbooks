@@ -49,16 +49,18 @@
 
 - name: set nginx.conf
   template: src=nginx.conf.j2 dest={{ etc_dir }}/nginx/nginx.conf mode=644 owner=root group=root
+            backup=yes
   notify: reload nginx
 
 - name: set fastcgi_params
   copy: src=fastcgi_params dest={{ etc_dir }}/nginx/ mode=644 owner=root group=root
+        backup=yes
   notify: reload nginx
 
 - name: set application nginx config file
   template: src={{ local_ansible_resources_dir }}/templates/nginx_app.conf.j2
             dest={{ etc_dir }}/nginx/conf.d/nginx_app_{{ canvas_id }}.conf
-            mode=644 owner=root group=root
+            mode=644 owner=root group=root backup=yes
   notify: reload nginx
 
 - include: ssl.yml
@@ -71,5 +73,6 @@
 
 - name: set nginx.ini for supervisor
   template: src=nginx.ini.j2 dest=/etc/supervisord.d/nginx.ini mode=644 owner=root group=root
+            backup=yes
 
 - include: start_supervisor_process.yml process_name=nginx

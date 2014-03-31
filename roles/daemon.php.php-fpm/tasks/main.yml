@@ -16,27 +16,30 @@
 - name: set php version file
   copy: dest={{ canvas_id_dir }}/.php-version
         content={{ php_interpreter_version }}
+        backup=yes
   notify: restart php-fpm
 
 - name: set pyrus.ini
   copy: src={{ local_interpreter_php_dir }}/conf.d/pyrus.ini
         dest={{ php_ini_scan_dir }}/pyrus.ini
+        backup=yes
   notify: restart php-fpm
 
 - name: set php-fpm init script
   template: src=run_php-fpm.sh.j2
             dest={{ etc_dir }}/php-fpm/run_php-fpm_{{ canvas_id }}.sh
-            mode=754 owner=root group=root
+            mode=754 owner=root group=root backup=yes
   notify: restart php-fpm
 
 - name: set php-fpm conf
   template: src=php-fpm.conf.j2
             dest={{ etc_dir }}/php-fpm/php-fpm_{{ canvas_id }}.conf
-            mode=754 owner=root group=root
+            mode=754 owner=root group=root backup=yes
   notify: reload php-fpm
 
 - name: set environment script
   template: src=common/templates/app_envs.sh.j2 dest={{ canvas_scripts_dir }}/envs.sh mode=754
+            backup=yes
   notify: restart php-fpm
 
 - name: check custom environment template exists
@@ -48,17 +51,19 @@
 - name: set custom environment script
   template: src={{ local_ansible_resources_dir }}/custom_envs.j2
             dest={{ canvas_scripts_dir }}/custom_envs.sh mode=754
+            backup=yes
   when: custom_env_exists|success
   notify: restart php-fpm
 
 - name: create blank custom environment script
   copy: dest={{ canvas_scripts_dir }}/custom_envs.sh content="" mode=754
+        backup=yes
   when: custom_env_exists|failed
   notify: restart php-fpm
 
 - name: set environment ini script
   template: src=env.ini.j2 dest={{ etc_dir }}/php-fpm/env_{{ canvas_id }}.ini
-            mode=644 owner=root group=root
+            mode=644 owner=root group=root backup=yes
   notify: restart php-fpm
 
 - name: check custom environment ini template exists
@@ -70,18 +75,19 @@
 - name: set custom environment ini script
   template: src={{ local_ansible_resources_dir }}/server_variables.j2
             dest={{ etc_dir }}/php-fpm/custom_env_{{ canvas_id }}.ini
-            mode=644 owner=root group=root
+            mode=644 owner=root group=roto backup=yes
   when: custom_env_ini_exists|success
   notify: restart php-fpm
 
 - name: create blank custom environment ini script
   copy: dest={{ etc_dir }}/php-fpm/custom_env_{{ canvas_id }}.ini content=""
         mode=644 owner=root group=root
+        backup=yes
   when: custom_env_ini_exists|failed
   notify: restart php-fpm
 
 - name: set php-fpm.ini for supervisor
   template: src=php-fpm.ini.j2 dest=/etc/supervisord.d/php-fpm_{{ canvas_id }}.ini
-            mode=644 owner=root group=root
+            mode=644 owner=root group=root backup=yes
 
 - include: start_supervisor_process.yml process_name=php-fpm({{ canvas_id }})

@@ -4,6 +4,7 @@
 
 - name: copy resources to the src directory
   copy: src=common/files/get-pip.py dest={{ src_dir }}/supervisor.local owner=root group=root
+        backup=yes
 
 - name: install pip
   command: python {{ src_dir }}/supervisor.local/get-pip.py creates=/usr/bin/pip
@@ -15,10 +16,12 @@
 
 - name: copy supervisord.conf
   copy: src=supervisord.conf dest=/etc/ mode=0744 owner=root group=root
+        backup=yes
   notify: restart supervisord
 
 - name: copy supervisord init script
   copy: src=supervisord dest=/etc/init.d/ mode=0754 owner=root group=root
+        backup=yes
   notify: restart supervisord
 
 - name: create supervisord directories

@@ -3,7 +3,7 @@
   file: path={{ redis_src_dir }} state=directory owner=root group=root
 
 - name: copy redis rpm
-  copy: src={{ local_redis_rpm_dir }}/{{ redis_rpm }} dest={{ redis_src_dir }}
+  copy: src={{ local_redis_rpm_dir }}/{{ redis_rpm }} dest={{ redis_src_dir }} backup=yes
 
 - name: install redis rpm
   yum: name={{ redis_src_dir }}/{{ redis_rpm }}
@@ -19,11 +19,11 @@
 
 - name: set redis.conf
   template: src=redis.conf.j2 dest={{ etc_dir }}/redis/redis_{{ canvas_id }}.conf
-            mode=644 owner=root group=root
+            mode=644 owner=root group=root backup=yes
   notify: restart redis
 
 - name: set ini file for supervisor
   template: src=redis.ini.j2 dest=/etc/supervisord.d/redis_{{ canvas_id }}.ini
-            mode=644 owner=root group=root
+            mode=644 owner=root group=root backup=yes
 
 - include: start_supervisor_process.yml process_name=redis({{ canvas_id }})

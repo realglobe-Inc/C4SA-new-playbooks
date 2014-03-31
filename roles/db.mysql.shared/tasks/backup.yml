@@ -4,6 +4,7 @@
 
 - name: copy resources to the src directory
   copy: src=common/files/get-pip.py dest={{ src_dir }}/supervisor.local owner=root group=root
+        backup=yes
 
 - name: install pip
   command: python {{ src_dir }}/supervisor.local/get-pip.py creates=/usr/bin/pip

@@ -33,22 +33,25 @@
 
 - name: set ruby_env.sh to the canvas application script directory
   template: src=ruby_env.sh.j2 dest={{ canvas_scripts_dir }}/ruby_env.sh mode=0644
+            backup=yes
 
 - name: create canvas bin dir
   file: path={{ canvas_id_dir }}/bin state=directory
 
 - name: create ruby binary wrappers
   template: src=ruby_bin_wrapper.j2 dest={{ canvas_id_dir }}/bin/{{ item }} mode=755
+            backup=yes
   with_items:
     - "ruby"
     - "gem"
     - "rake"
 
 - name: set .gemrc file
-  copy: src=.gemrc dest={{ interpreter_ruby_dir }}/.gemrc
+  copy: src=.gemrc dest={{ interpreter_ruby_dir }}/.gemrc backup=yes
 
 - name: install bundler
   gem: name=bundler executable={{ canvas_id_dir }}/bin/gem user_install=no state=present
 
 - name: create bundle binary wrappers
   template: src=bundle_wrapper.j2 dest={{ canvas_id_dir }}/bin/bundle mode=755
+            backup=yes
