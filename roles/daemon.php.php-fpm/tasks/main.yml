@@ -75,7 +75,7 @@
 - name: set custom environment ini script
   template: src={{ local_ansible_resources_dir }}/server_variables.j2
             dest={{ etc_dir }}/php-fpm/custom_env_{{ canvas_id }}.ini
-            mode=644 owner=root group=roto backup=yes
+            mode=644 owner=root group=root backup=yes
   when: custom_env_ini_exists|success
   notify: restart php-fpm
 
