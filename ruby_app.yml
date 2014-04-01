@@ -9,3 +9,4 @@
     - role: daemon.ruby.unicorn
   vars_files:
     - "{{ local_ansible_resources_dir }}/vars/interpreter.ruby.yml"
+    - "common/vars/nginx.yml"
