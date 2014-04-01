@@ -2,7 +2,7 @@
 - name: check process started
   supervisorctl: name={{ process_name }} state=started
   register: check_started
-  failed_when: check_started|failed and "(no such process)" not in check_started.get("msg", "") and "(already started)" not in recheck_started.get("msg", "")
+  failed_when: check_started|failed and "(no such process)" not in check_started.get("msg", "") and "(already started)" not in check_started.get("msg", "")
 
 - name: supervisor update
   command: supervisorctl update
