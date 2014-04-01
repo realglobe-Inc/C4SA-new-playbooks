@@ -19,6 +19,6 @@ nginx_vars: {
   https_port: "{{ https_port if https_port is defined else 443 }}",
   server_name: "{{ server_name if server_name is defined else ansible_eth0.ipv4.address }}",
   server_addr: "$server_addr",
-  document_root_prefix: "/c4sa/canvases/{{ canvas_id }}",
+  document_root_prefix: "/canvases/{{ canvas_id }}",
   proxy_pass: "unix:{{ unicorn_sock }}"
 }
