@@ -20,5 +20,5 @@ nginx_vars: {
   server_name: "{{ server_name if server_name is defined else ansible_eth0.ipv4.address }}",
   server_addr: "$server_addr",
   document_root_prefix: "/canvases/{{ canvas_id }}",
-  proxy_pass: "unix:{{ unicorn_sock }}"
+  proxy_pass: "http://unix:{{ unicorn_sock }}"
 }
