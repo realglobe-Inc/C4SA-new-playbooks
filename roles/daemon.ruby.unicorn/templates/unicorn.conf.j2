@@ -2,10 +2,10 @@ worker_processes 1
 
 working_directory '{{ canvas_id_dir }}/project'
 
-listen '{{ unicorn_var_run_dir }}/unicorn.sock'
+listen '{{ unicorn_sock }}'
 
 user('{{ app_user }}', '{{ app_group }}')
 
 timeout 30
 
-pid '{{ unicorn_var_run_dir }}/unicorn.pid'
+pid '{{ unicorn_pid }}'

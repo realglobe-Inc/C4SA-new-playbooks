@@ -29,7 +29,7 @@ http {
     uwsgi_temp_path {{ var_run_dir }}/nginx/uwsgi;
     scgi_temp_path {{ var_run_dir }}/nginx/scgi;
 
-    include {{ etc_dir }}/nginx/conf.d/*;
+    include {{ etc_dir }}/nginx/conf.d/*.conf;
 
     server {
         listen    {{ nginx_vars['http_port'] }} default_server;

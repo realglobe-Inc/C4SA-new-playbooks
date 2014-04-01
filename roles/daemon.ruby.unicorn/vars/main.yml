@@ -9,3 +9,16 @@ app_group: "{{ nginx_group }}"
 
 unicorn_var_run_dir: "{{ var_run_dir }}/{{ canvas_id }}/unicorn"
 unicorn_var_log_dir: "{{ var_log_dir }}/{{ canvas_id }}/unicorn"
+
+unicorn_sock: "{{ unicorn_var_run_dir }}/unicorn.sock"
+unicorn_pid: "{{ unicorn_var_run_dir }}/unicorn.pid"
+
+nginx_vars: {
+  server_socket: "{{ web_port if web_port is defined else 80 }}",
+  http_port: "{{ http_port if http_port is defined else 80 }}",
+  https_port: "{{ https_port if https_port is defined else 443 }}",
+  server_name: "{{ server_name if server_name is defined else ansible_eth0.ipv4.address }}",
+  server_addr: "$server_addr",
+  document_root_prefix: "/c4sa/canvases/{{ canvas_id }}",
+  proxy_pass: "unix:{{ unicorn_sock }}"
+}

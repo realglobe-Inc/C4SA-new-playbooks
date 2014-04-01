@@ -8,3 +8,16 @@ app_group: "{{ nginx_group }}"
 
 fpm_var_run_dir: "{{ var_run_dir }}/{{ canvas_id }}/php-fpm"
 fpm_var_log_dir: "{{ var_log_dir }}/{{ canvas_id }}/php-fpm"
+
+fpm_sock: "{{ fpm_var_run_dir }}/php-fpm.sock"
+fpm_pid: "{{ fpm_var_run_dir }}/php-fpm.pid"
+
+nginx_vars: {
+  server_socket: "{{ web_port if web_port is defined else 80 }}",
+  http_port: "{{ http_port if http_port is defined else 80 }}",
+  https_port: "{{ https_port if https_port is defined else 443 }}",
+  server_name: "{{ server_name if server_name is defined else ansible_eth0.ipv4.address }}",
+  server_addr: "$server_addr",
+  document_root_prefix: "/c4sa/canvases/{{ canvas_id }}",
+  fastcgi_pass: "unix:{{ fpm_var_run_dir }}/php-fpm.sock"
+}

@@ -1,5 +1,5 @@
 [global]
-pid = {{ fpm_var_run_dir }}/php-fpm.pid
+pid = {{ fpm_pid }}
 daemonize = no
 error_log = {{ fpm_var_log_dir }}/error.log
 log_level = notice
@@ -8,7 +8,7 @@ log_level = notice
 user = {{ app_user }}
 group = {{ app_group }}
 
-listen = {{ fpm_var_run_dir }}/php-fpm.sock
+listen = {{ fpm_sock }}
 
 listen.owner = {{ nginx_user }}
 listen.group = {{ nginx_group }}
