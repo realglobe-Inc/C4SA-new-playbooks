@@ -2,14 +2,14 @@
 - name: create db.mysql.shared src directory
   file: path={{ mysql_src_dir }} state=directory owner=root group=root
 
-- name: copy MySQL rpms
+- name: copy MySQL-server
   copy: src={{ local_mysql_rpm_dir }}/{{ item }}
         dest={{ mysql_src_dir }} owner=root group=root
         backup=yes
   with_items:
     - "{{ mysql_rpm_string % 'server' }}"
 
-- name: install MySQL rpms
+- name: install MySQL-server
   yum: name={{ item }}
   with_items:
     - "{{ mysql_src_dir }}/{{ mysql_rpm_string % 'server' }}"
