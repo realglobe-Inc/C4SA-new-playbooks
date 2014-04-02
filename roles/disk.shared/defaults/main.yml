@@ -6,5 +6,5 @@ local_app_branch_path: "../project"
 nginx_user: nginx
 nginx_group: nginx
 
-remote_app_branch_path: /canvases/{{ canvas_id }}/{{ local_app_branch_path | basename }}
+remote_app_branch_path: /canvases/{{ canvas_id }}/project
 remote_app_branch_mirror_path: /c4sa/src/canvases/{{ canvas_id }}

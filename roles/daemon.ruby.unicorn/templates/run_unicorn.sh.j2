@@ -2,4 +2,5 @@
 source {{ canvas_scripts_dir }}/envs.sh
 source {{ canvas_scripts_dir }}/custom_envs.sh
 source {{ canvas_scripts_dir }}/ruby_env.sh
-exec unicorn -c {{ etc_dir }}/unicorn/unicorn_{{ canvas_id }}.conf
+cd {{ remote_app_branch_path }}
+exec bundle exec unicorn $@
