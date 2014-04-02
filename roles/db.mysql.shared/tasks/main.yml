@@ -2,16 +2,24 @@
 - name: create db.mysql.shared src directory
   file: path={{ src_dir }}/db.mysql.shared/ state=directory owner=root group=root
 
-- name: copy MySQL-client rpm
-  copy: src={{ local_mysql_rpm_dir }}/{{ mysql_rpm_string % 'client' }}
+- name: copy MySQL rpms
+  copy: src={{ local_mysql_rpm_dir }}/{{ item }}
         dest={{ src_dir }}/db.mysql.shared/
         owner=root group=root backup=yes
+  with_items:
+    - "{{ mysql_shared_compat_rpm }}"
+    - "{{ mysql_rpm_string % 'client' }}"
+    - "{{ mysql_rpm_string % 'devel' }}"
+    - "{{ mysql_rpm_string % 'shared' }}"
 
-- name: install MySQL-client and MySQL-python
+- name: install MySQL rpms and MySQL-python
   yum: name={{ item }}
   with_items:
     - MySQL-python
-    - "{{ src_dir }}/db.mysql.shared/{{ mysql_rpm_string % 'client' }}"
+    - "{{ mysql_src_dir }}/{{ mysql_shared_compat_rpm }}"
+    - "{{ mysql_src_dir }}/{{ mysql_rpm_string % 'client' }}"
+    - "{{ mysql_src_dir }}/{{ mysql_rpm_string % 'devel' }}"
+    - "{{ mysql_src_dir }}/{{ mysql_rpm_string % 'shared' }}"
 
 - include: server.yml
   when: "(client_only is not defined or not client_only) and (backup_only is not defined or not backup_only)"
