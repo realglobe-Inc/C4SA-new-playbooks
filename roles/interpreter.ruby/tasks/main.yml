@@ -2,6 +2,8 @@
 - name: install required packages
   yum: name={{ item }}
   with_items:
+    - gcc
+    - gcc-c++
     - openssl-devel
     - rsync
 
