@@ -1,8 +1,16 @@
+---
 - name: install required packages
   yum: name={{ item }}
   with_items:
     - git
-    - yum
+    - rsync
+
+- name: create app group
+  group: name={{ app_group }} system={{ app_user_is_system_user }}
+
+- name: create app user
+  user: name={{ app_user }} group={{ app_group }}
+        home={{ app_user_home }} system={{ app_user_is_system_user }}
 
 - name: create remote branch mirror dir
   file: path={{ remote_app_branch_mirror_path }} state=directory

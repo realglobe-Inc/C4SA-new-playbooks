@@ -1,4 +1,7 @@
 ---
+- name: install rsync
+  yum: name=rsync
+
 - name: get datetime
   debug: msg={{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}
   register: datetime

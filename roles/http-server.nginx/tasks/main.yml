@@ -5,6 +5,13 @@
     - openssl
     - rsync
 
+- name: create nginx group
+  group: name={{ nginx_group }} system={{ nginx_user_is_system_user }}
+
+- name: create nginx user
+  user: name={{ nginx_user }} group={{ nginx_group }}
+        home={{ nginx_user_home }} system={{ nginx_user_is_system_user }}
+
 - name: create nginx src directory
   file: path={{ nginx_src_dir }} state=directory
         owner={{ ansible_ssh_user }} recurse=yes

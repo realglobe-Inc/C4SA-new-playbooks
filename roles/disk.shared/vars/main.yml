@@ -1,3 +1,5 @@
 ---
 app_user: "{{ nginx_user }}"
 app_group: "{{ nginx_group }}"
+app_user_home: "{{ nginx_user_home }}"
+app_user_is_system_user: yes

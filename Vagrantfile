@@ -12,13 +12,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     cfg.vm.box_download_checksum = "e57a14fb73af0d98084411581f86e190590944f8d2120d2d89fefb85066aa622"
   end
 
-  config.vm.define :centos64_32 do |cfg|
-    cfg.vm.box = "centos64-i386"
-    cfg.vm.box_url = "http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-i386-v20131103.box"
-    cfg.vm.box_download_checksum_type = "sha256"
-    cfg.vm.box_download_checksum = "d04663cdc0300c06325b87bbb8cc95750d953892dcb953c142fdca553a10be43"
-  end
-
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = "site.yml"
     ansible.verbose = "v"
