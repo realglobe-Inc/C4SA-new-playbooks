@@ -73,6 +73,7 @@
 #
 # - name: delete local dumped data
 #   local_action: file path=/tmp/{{ dumped_sql_name }}.sql.gz state=absent
+#   sudo: no
 #
 # - name: import dumped data
 #   mysql_db: state=import target={{ mysql_src_dir }}/{{ dumped_sql_name }}.sql.gz
@@ -97,6 +98,7 @@
 #
 # - name: delete local dumped schema
 #   local_action: file path=/tmp/{{ dumped_sql_name }}-schema.sql.gz state=absent
+#   sudo: no
 #
 # - name: import dumped schema
 #   mysql_db: state=import target={{ mysql_src_dir }}/{{ dumped_sql_name }}-schema.sql.gz
