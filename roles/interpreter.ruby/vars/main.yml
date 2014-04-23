@@ -3,4 +3,4 @@ ruby_resources_dir: /c4sa/interpreter.ruby/{{ appliance_version }}
 ruby_src_dir: "{{ src_dir }}/interpreter.ruby/{{ appliance_version }}"
 
 interpreter_ruby_dir: "{{ canvas_id_dir }}/{{ interpreter_ruby_appliance_id }}"
-gem_dir: "{{ interpreter_ruby_dir }}/gems"
+gem_dir: "{{ interpreter_ruby_dir }}/gems/{{ ruby_interpreter_version }}"
