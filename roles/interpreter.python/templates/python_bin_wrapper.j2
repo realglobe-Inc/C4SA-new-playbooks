@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+source {{ canvas_scripts_dir }}/python_env.sh
+
+HOME={{ interpreter_python_dir }} exec {{ python_resources_dir }}/{{ python_interpreter_version }}/bin/{{ item }} $@

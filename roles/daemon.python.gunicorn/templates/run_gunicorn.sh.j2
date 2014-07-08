@@ -1,0 +1,6 @@
+#!/bin/bash
+source {{ canvas_scripts_dir }}/envs.sh
+source {{ canvas_scripts_dir }}/custom_envs.sh
+source {{ canvas_scripts_dir }}/ruby_env.sh
+cd {{ remote_app_branch_path }}
+exec gunicorn -c {{ etc_dir }}/gunicorn/gunicorn_{{ canvas_id }}.conf $@

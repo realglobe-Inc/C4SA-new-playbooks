@@ -1,0 +1,7 @@
+[program:gunicorn({{ canvas_id }})]
+command={{ etc_dir }}/gunicorn/run_gunicorn_{{ canvas_id }}.sh
+numprocs=1
+stopsignal=QUIT
+killasgroup=true
+stdout_logfile={{ gunicorn_var_log_dir }}/stdout.log
+stderr_logfile={{ gunicorn_var_log_dir }}/stderr.log

@@ -1,0 +1,5 @@
+---
+python_resources_dir: /c4sa/interpreter.python/{{ appliance_version }}
+python_src_dir: "{{ src_dir }}/interpreter.python/{{ appliance_version }}"
+
+interpreter_python_dir: "{{ canvas_id_dir }}/{{ interpreter_python_appliance_id }}"

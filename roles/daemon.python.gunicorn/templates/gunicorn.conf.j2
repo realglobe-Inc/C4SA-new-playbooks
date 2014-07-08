@@ -1,0 +1,11 @@
+worker_processes 1
+
+working_directory '{{ canvas_id_dir }}/project'
+
+listen '{{ gunicorn_sock }}'
+
+user('{{ app_user }}', '{{ app_group }}')
+
+timeout 30
+
+pid '{{ gunicorn_pid }}'
