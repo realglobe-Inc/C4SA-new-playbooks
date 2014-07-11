@@ -27,13 +27,6 @@
 - name: create canvas application script directory
   file: path={{ canvas_scripts_dir }} state=directory
 
-- name: create gem directory
-  file: path={{ gem_dir }} owner={{ ansible_ssh_user }} group={{ ansible_ssh_user }} state=directory
-
-- name: rsync the gem directory
-  synchronize: src={{ local_interpreter_python_dir }}/gems/
-               dest={{ gem_dir }} owner=no group=no rsync_timeout=100
-  sudo: no
 
 - name: set python_env.sh to the canvas application script directory
   template: src=python_env.sh.j2 dest={{ canvas_scripts_dir }}/python_env.sh mode=0644
