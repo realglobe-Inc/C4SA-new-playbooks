@@ -9,7 +9,7 @@
   file: path={{ etc_dir }}/gunicorn owner=root group=root state=directory
 
 - name: install gunicorn
-  pip: name=gunicorn executable={{ canvas_id_dir }}/bin/pip user_install=no state=present
+  pip: name=gunicorn executable={{ canvas_id_dir }}/bin/pip state=present
 
 - name: set gunicorn init script
   template: src=run_gunicorn.sh.j2
