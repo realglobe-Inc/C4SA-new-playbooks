@@ -24,16 +24,16 @@
         backup=yes
   notify: restart supervisord
 
-- name: copy supervisord user custom script
-  copy: src=/canvases/{{ canvas_id }}/home/custom-supervisor.ini dest=/etc/supervisor.d mode=0754 owner=root group=root
-  notify: restart supervisord
-
 - name: create supervisord directories
   file: path={{ item }} state=directory owner=root group=root
   with_items:
     - /etc/supervisord.d
     - /var/run/supervisord
     - /var/log/supervisord
+
+- name: copy supervisord user custom script
+  copy: src=/canvases/{{ canvas_id }}/home/custom-supervisor.ini dest=/etc/supervisord.d/ mode=0754 owner=root group=root
+  notify: restart supervisord
 
 - name: start supervisord
   service: name=supervisord state=started enabled=yes
