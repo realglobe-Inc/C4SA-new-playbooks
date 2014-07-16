@@ -2,7 +2,7 @@ workers=1
 
 directory='{{ canvas_id_dir }}/project'
 
-bind='{{ gunicorn_sock }}'
+bind='unix:{{ gunicorn_sock }}'
 
 user='{{ app_user }}'
 
