@@ -1,11 +1,11 @@
-worker_processes 1
+workers=1
 
-working_directory '{{ canvas_id_dir }}/project'
+directory='{{ canvas_id_dir }}/project'
 
-listen '{{ gunicorn_sock }}'
+bind='{{ gunicorn_sock }}'
 
-user('{{ app_user }}', '{{ app_group }}')
+user='{{ app_user }}'
 
-timeout 30
+timeout=30
 
-pid '{{ gunicorn_pid }}'
+pid='{{ gunicorn_pid }}'
