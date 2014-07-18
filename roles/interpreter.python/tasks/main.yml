@@ -29,7 +29,7 @@
 
 
 - name: set python_env.sh to the canvas application script directory
-  template: src=python_env.sh.j2 dest={{ canvas_scripts_dir }}/python_env.sh mode=0644
+  template: src=python_env.sh.j2 dest={{ canvas_scripts_dir }}/python_env.sh mode=755
             backup=yes
 
 - name: create canvas bin dir
