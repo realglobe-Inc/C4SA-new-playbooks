@@ -1,4 +1,13 @@
 ---
+- name: create requirement file
+  shell: pip freeze > requirement
+  
+- name: copy requirement file
+  copy: src=/requirement dest=/requirement
+  
+- name: pip install
+  pip: pip install -r '/requirement'
+
 - name: create gunicorn directories
   file: path={{ item }}/gunicorn owner={{ app_user }} group={{ app_group }} state=directory
   with_items:
