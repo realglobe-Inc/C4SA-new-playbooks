@@ -1,12 +1,13 @@
 ---
 - name: create requirement file
-  shell: pip freeze > requirement
+  shell: pip freeze > /tmp/requirement
   
 - name: copy requirement file
-  copy: src=/requirement dest=/requirement
+  copy: src=/tmp/requirement dest={{ etc_dir }}/requirement
   
 - name: pip install
-  pip: pip install -r '/requirement'
+  command: pip install -U -r '{{ etc_dir }}/requirement'
+  ignore_errors: yes
 
 - name: create gunicorn directories
   file: path={{ item }}/gunicorn owner={{ app_user }} group={{ app_group }} state=directory

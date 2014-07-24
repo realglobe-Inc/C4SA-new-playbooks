@@ -11,3 +11,4 @@ site.yml
 
 # pyenv version file
 .python-version
+*.pyc
