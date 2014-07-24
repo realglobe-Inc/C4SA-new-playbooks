@@ -1,9 +1,6 @@
 ---
-- name: create requirement file
-  shell: pip freeze > /tmp/requirement
-  
 - name: copy requirement file
-  copy: src=/tmp/requirement dest={{ etc_dir }}/requirement
+  copy: src=/opt/requirement dest={{ etc_dir }}/requirement
   
 - name: pip install
   command: pip install -U -r '{{ etc_dir }}/requirement'
