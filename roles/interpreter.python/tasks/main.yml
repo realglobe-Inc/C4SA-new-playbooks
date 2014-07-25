@@ -41,3 +41,9 @@
   with_items:
     - "python"
     - "pip"
+
+- name: install virtualenv
+  pip: name=virtualenv
+
+- name: make virtualenv directory
+  command: virtualenv {{canvas_id_dir}}/virtualenv

@@ -3,7 +3,7 @@
   copy: src=/opt/requirement dest={{ etc_dir }}/requirement
   
 - name: pip install
-  command: pip install -U -r '{{ etc_dir }}/requirement'
+  pip: requirements='{{ etc_dir }}/requirement' virtualenv={{ canvas_id_dir }}/virtualenv
   ignore_errors: yes
 
 - name: create gunicorn directories
