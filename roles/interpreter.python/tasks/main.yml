@@ -42,6 +42,11 @@
     - "python"
     - "pip"
 
+- name: make python path
+  shell: make
+  environment:
+    PATH: "{{ canvas_id_dir }}/bin:{{ python_resources_dir }}/pythonbrew/pythons/Python-{{ python_interpreter_version }}/bin:{{ ansible_env.PATH }}"
+
 - name: install virtualenv
   pip: name=virtualenv
 
