@@ -55,5 +55,5 @@
 - name: make virtualenv python path
   shell: echo $PATH
   environment:
-    PATH: "{{canvas_id_dir}}/virtualenv/bin:{{ path.stdout }}"
+    PATH: {{canvas_id_dir}}/virtualenv/bin:{{ path.stdout }}
 
