@@ -18,3 +18,4 @@ interpreter_python_appliance_id: ptn
 local_python_resources_dir: /c4sa/interpreter.python/{{ appliance_version }}
 local_ansible_resources_dir: /canvases/ansible_resources
 local_interpreter_python_dir: "{{ canvas_id_dir }}/{{ interpreter_python_appliance_id }}"
+bin_resources_dir: "{{ python_resources_dir }}/pythonbrew/pythons/Python-{{python_interpreter_version }}/bin"
