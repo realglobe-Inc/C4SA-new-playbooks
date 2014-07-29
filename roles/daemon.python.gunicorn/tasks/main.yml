@@ -3,7 +3,7 @@
   copy: src=/opt/requirement dest={{ etc_dir }}/requirement
   
 - name: pip install
-  pip: requirements='{{ etc_dir }}/requirement' virtualenv={{ canvas_id_dir }}/virtualenv executable={{ bin_resources_dir }}/pip
+  pip: requirements='{{ etc_dir }}/requirement' virtualenv={{ canvas_id_dir }}/virtualenv executable={{ canvas_id_dir }}/pip
   ignore_errors: yes
 
 - name: create gunicorn directories
@@ -16,7 +16,7 @@
   file: path={{ etc_dir }}/gunicorn owner=root group=root state=directory
 
 - name: install gunicorn
-  pip: name=gunicorn state=present version=18.0 executable={{ bin_resources_dir }}/pip
+  pip: name=gunicorn state=present version=18.0 executable={{ canvas_id_dir }}/pip
 
 - name: set gunicorn init script
   template: src=run_gunicorn.sh.j2

@@ -39,7 +39,7 @@
   pip: name=virtualenv executable={{ bin_resources_dir}}/pip
 
 - name: make virtualenv directory
-  command: virtualenv -p {{ python_resources_dir }}/pythonbrew/pythons/Python-{{ python_interpreter_version }}/bin/python {{canvas_id_dir}}/virtualenv
+  shell: "{{ bin_resources_dir }}/virtualenv {{canvas_id_dir}}/virtualenv"
 
 - name: create python binary wrappers
   template: src=python_bin_wrapper.j2 dest={{ canvas_id_dir }}/bin/{{ item }} mode=755
