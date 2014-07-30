@@ -1,5 +1,5 @@
 [program:gunicorn({{ canvas_id }})]
-command={{ etc_dir }}/gunicorn/run_gunicorn_{{ canvas_id }}.sh main:qpp
+command={{ etc_dir }}/gunicorn/run_gunicorn_{{ canvas_id }}.sh main:app
 numprocs=1
 stopsignal=QUIT
 killasgroup=true
