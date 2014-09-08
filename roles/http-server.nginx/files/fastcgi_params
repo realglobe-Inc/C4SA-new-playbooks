@@ -18,8 +18,8 @@ fastcgi_param  SERVER_ADDR        $server_addr;
 fastcgi_param  SERVER_PORT        $server_port;
 fastcgi_param  SERVER_NAME        $server_name;
 
-set $https off;
+set $my_https off;
 if ($scheme = https) {
-set $https on;
+set $my_https on;
 }
-fastcgi_param  HTTPS              $https;
+fastcgi_param  HTTPS              $my_https;
