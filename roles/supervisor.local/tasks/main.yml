@@ -32,8 +32,9 @@
     - /var/log/supervisord
 
 - name: copy supervisord user custom script
-  copy: src=/canvases/{{ canvas_id }}/home/custom-supervisor.ini dest=/etc/supervisord.d/ mode=0754 owner=root group=root
+  copy: src={{ item }} dest=/etc/supervisord.d/ mode=0754 owner=root group=root
   notify: restart supervisord
+  with_fileglob: /canvases/{{ canvas_id }}/etc/supervisor/custom-*.ini
 
 - name: start supervisord
   service: name=supervisord state=started enabled=yes
