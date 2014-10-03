@@ -1,0 +1,6 @@
+---
+- name: restart gunicorn
+  supervisorctl: name="gunicorn({{ canvas_id }})" state=restarted
+
+- name: reload gunicorn
+  shell: supervisorctl pid "gunicorn({{ canvas_id }})" | xargs kill -s HUP

@@ -1,0 +1,21 @@
+---
+canvas_id: c4sa_canvas
+
+var_run_dir: /var/run/c4sa
+var_log_dir: /var/log/c4sa
+var_lock_dir: /var/lock/c4sa
+etc_dir: /etc/c4sa
+src_dir: /c4sa/src
+canvases_dir: /canvases
+canvas_id_dir: "{{ canvases_dir }}/{{ canvas_id }}"
+canvas_scripts_dir: "{{ canvas_id_dir }}/scripts"
+
+appliance_version: 1.0.0
+
+python_interpreter_version: 2.7.3
+interpreter_python_appliance_id: ptn
+
+local_python_resources_dir: /c4sa/interpreter.python/{{ appliance_version }}
+local_ansible_resources_dir: /canvases/ansible_resources
+local_interpreter_python_dir: "{{ canvas_id_dir }}/{{ interpreter_python_appliance_id }}"
+bin_resources_dir: "{{ python_resources_dir }}/pythonbrew/pythons/Python-{{python_interpreter_version }}/bin"

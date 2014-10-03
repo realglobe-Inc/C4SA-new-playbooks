@@ -1,0 +1,50 @@
+---
+- name: install required packages
+  yum: name={{ item }}
+  with_items:
+    - gcc
+    - gcc-c++
+    - openssl-devel
+    - rsync
+
+- name: create python src directory
+  file: path={{ python_src_dir }} state=directory
+        owner={{ ansible_ssh_user }} recurse=yes
+
+- name: create python resource directory
+  file: path={{ python_resources_dir }} state=directory owner=root group=root
+
+- name: transfer python resources to the python src directory
+  synchronize: src={{ local_python_resources_dir }}/ dest={{ python_src_dir }}
+               owner=no group=no delete=yes rsync_timeout=100
+  sudo: no
+
+- name: rsync python src directory to the python resource directory
+  command: "rsync -a --delay-updates --no-owner --no-group --out-format='<<CHANGED>>%i %n%L' {{ python_src_dir }}/ {{ python_resources_dir }}"
+  register: rsync_result
+  changed_when: rsync_result.rc == 0 and rsync_result.stdout
+
+- name: create canvas application script directory
+  file: path={{ canvas_scripts_dir }} state=directory
+
+
+- name: set python_env.sh to the canvas application script directory
+  template: src=python_env.sh.j2 dest={{ canvas_scripts_dir }}/python_env.sh mode=755
+            backup=yes
+
+- name: create canvas bin dir
+  file: path={{ canvas_id_dir }}/bin state=directory
+
+- name: install virtualenv
+  pip: name=virtualenv executable={{ bin_resources_dir}}/pip
+
+- name: make virtualenv directory
+  shell: "{{ bin_resources_dir }}/virtualenv {{canvas_id_dir}}/virtualenv"
+
+- name: create python binary wrappers
+  template: src=python_bin_wrapper.j2 dest={{ canvas_id_dir }}/bin/{{ item }} mode=755
+            backup=yes
+  with_items:
+    - "python"
+    - "pip"
+

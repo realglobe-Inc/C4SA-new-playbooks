@@ -1,0 +1,60 @@
+---
+- name: copy requirement file
+  copy: src=/opt/requirement dest={{ etc_dir }}/requirement
+  
+- name: pip install
+  pip: requirements='{{ etc_dir }}/requirement' executable={{ canvas_id_dir }}/virtualenv/bin/pip
+
+- name: create gunicorn directories
+  file: path={{ item }}/gunicorn owner={{ app_user }} group={{ app_group }} state=directory
+  with_items:
+    - "{{ gunicorn_var_run_dir }}"
+    - "{{ gunicorn_var_log_dir }}"
+
+- name: create gunicorn etc directory
+  file: path={{ etc_dir }}/gunicorn owner=root group=root state=directory
+
+- name: install gunicorn
+  pip: name=gunicorn state=present version=18.0 executable={{ canvas_id_dir }}/virtualenv/bin/pip
+
+- name: set gunicorn init script
+  template: src=run_gunicorn.sh.j2
+            dest={{ etc_dir }}/gunicorn/run_gunicorn_{{ canvas_id }}.sh
+            mode=754 owner=root group=root backup=yes
+  notify: restart gunicorn
+
+- name: set gunicorn conf
+  template: src=gunicorn.conf.j2
+            dest={{ etc_dir }}/gunicorn/gunicorn_{{ canvas_id }}.conf
+            mode=754 owner=root group=root backup=yes
+  notify: reload gunicorn
+
+- name: set environment script
+  template: src=common/templates/app_envs.sh.j2 dest={{ canvas_scripts_dir }}/envs.sh mode=754
+            backup=yes
+  notify: restart gunicorn
+
+- name: check custom environment template exists
+  local_action: file path={{ local_ansible_resources_dir }}/custom_envs.j2 state=file
+  sudo: no
+  register: custom_env_exists
+  ignore_errors: yes
+
+- name: set custom environment script
+  template: src={{ local_ansible_resources_dir }}/custom_envs.j2
+            dest={{ canvas_scripts_dir }}/custom_envs.sh mode=754
+            backup=yes
+  when: custom_env_exists|success
+  notify: restart gunicorn
+
+- name: create blank custom environment script
+  copy: dest={{ canvas_scripts_dir }}/custom_envs.sh content="" mode=754
+        backup=yes
+  when: custom_env_exists|failed
+  notify: restart gunicorn
+
+- name: set gunicorn.ini for supervisor
+  template: src=gunicorn.ini.j2 dest=/etc/supervisord.d/gunicorn_{{ canvas_id }}.ini
+            mode=644 owner=root group=root backup=yes
+
+- include: start_supervisor_process.yml process_name=gunicorn({{ canvas_id }})

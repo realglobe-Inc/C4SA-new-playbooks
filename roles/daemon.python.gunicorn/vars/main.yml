@@ -1,0 +1,24 @@
+---
+python_resources_dir: /c4sa/interpreter.python/{{ appliance_version }}
+python_src_dir: "{{ src_dir }}/interpreter.python/{{ appliance_version }}"
+
+pip_dir: "{{ canvas_id_dir }}/{{ interpreter_python_appliance_id }}/pips/{{ python_interpreter_version }}"
+
+app_user: "{{ nginx_user }}"
+app_group: "{{ nginx_group }}"
+
+gunicorn_var_run_dir: "{{ var_run_dir }}/{{ canvas_id }}/gunicorn"
+gunicorn_var_log_dir: "{{ var_log_dir }}/{{ canvas_id }}/gunicorn"
+
+gunicorn_sock: "{{ gunicorn_var_run_dir }}/gunicorn.sock"
+gunicorn_pid: "{{ gunicorn_var_run_dir }}/gunicorn.pid"
+
+nginx_vars: {
+  server_socket: "{{ web_port if web_port is defined else 80 }}",
+  http_port: "{{ http_port if http_port is defined else 80 }}",
+  https_port: "{{ https_port if https_port is defined else 443 }}",
+  server_name: "{{ server_name if server_name is defined else ansible_eth0.ipv4.address }}",
+  server_addr: "$server_addr",
+  document_root_prefix: "/canvases/{{ canvas_id }}",
+  proxy_pass: "http://unix:{{ gunicorn_sock }}"
+}
